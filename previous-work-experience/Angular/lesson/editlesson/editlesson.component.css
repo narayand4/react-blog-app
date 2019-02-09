@@ -1,0 +1,625 @@
+.breadcrumb-container{
+	margin: 15px 0px;
+}
+.editlesson-container-header{
+	background-color: #FFF;
+	/*margin: 15px 0px;*/
+}
+.editlesson-container-header .heading2-2{
+	padding: 30px 0px 15px 0px;
+	color: #1aafcd;
+    font-family: 'open_sanssemibold';
+    width: auto;
+    display: inline;
+}
+.editlesson-container-page{
+	padding: 15px 0px;
+    background: #f7f8fa;
+    clear: both;
+}
+.editlesson-container-page .left-container{
+	float: left;
+	width: 219px;
+	display: block;
+}
+.editlesson-container-page .right-container{
+    float: left;
+    width: calc(100% - 219px);
+    display: block;
+    padding: 25px;
+    background-color: #FFF;
+    color: #1b1b1b;
+}
+.editlesson-container-page .right-container /deep/ .info-box{
+    margin-top: 0px;
+}
+
+
+/* HORIZONTAL CARD START */
+.v-detail-lesson-box{
+	/*margin: 0px auto;*/
+
+    position: relative;
+    background: #f7f8fa;
+    width: 197px;
+    max-width: 197px;
+    max-height: 310px;
+    text-align: left;
+    /*border-radius: 4px;*/
+    /*box-shadow: 0px 0px 5px 0px #CDCDCD;*/
+    /*background: #FFF;*/
+    /*height: 210px !important;*/
+    /*border: 1px solid #CDCDCD;*/
+    
+    /*float: left;*/
+    /*margin: 8px 0px 8px 2px;*/
+    /*margin: 10px 0px 10px 0px;*/
+    /*border: 1px solid #fff;*/
+}
+.v-detail-lesson-box:hover{
+    /*border:1px solid #CDCDCD;*/
+    cursor: pointer;
+    /*box-shadow: 0px 0px 6px 2px #CDCDCD;*/
+}
+.lessonbox-increased-margin .v-detail-lesson-box{
+    margin: 8px 12px 8px 12px;
+}
+.v-detail-lesson-box .title{
+    font-size: 14px;
+    width: 100%;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 197px;
+    height: 100px;
+    position: relative;
+
+    /*border-radius: 4px 4px 0px 0px;*/
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    /*padding: 10px;*/
+    /*border-bottom: 1px solid #CCC;*/
+    /*font-family: 'open_sansregular';*/
+    /*background-image: url('assets/images/stepprofile/148X90_7c8795c7-da71-4ae5-b2e3-a6dfa88e694b.jpeg');*/
+}
+.v-detail-lesson-box .outer-content{
+    float: left;
+    width: 100%;
+    margin-top: 10px;
+}
+.v-detail-lesson-box .outer-content .user-container,
+.v-detail-lesson-box .outer-content .publish-btn{
+    display: none;
+}
+.v-detail-lesson-box .title .freetrial{
+    position: absolute;
+    top: 5px;
+    left: -4px;
+    z-index: 5;
+}
+.v-detail-lesson-box .title .affiliation-container{
+    position: absolute;
+    bottom: 0px;
+    height: 24px;
+    width: 100%;
+    text-align: left;
+    float: left;
+    z-index: 10;
+    padding: 2px 5px;
+    color: #FFF;
+    font-family: "open_sanssemibold";
+    background: rgba(27, 27, 27, 0.5);
+}
+.v-detail-lesson-box .title .affiliation-container .logo-image {
+    width: 100%;
+    height: 100%;
+    max-width: 20px;
+    max-height: 20px;
+    float: left;
+    margin-right: 8px;
+}
+.v-detail-lesson-box .title .affiliation-container .affiliation-content {
+    float: left;
+
+    width: calc(100% - 25px);
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-top: 2px;
+    font-size: 11px;
+
+    /*margin-top: 8px;*/
+
+    /*font-size: 14px;*/
+    /*font-family: 'open_sanssemibold';*/
+}
+.v-detail-lesson-box .content .basic-info{
+    float: left;
+    width: 100%;
+}
+.v-detail-lesson-box .content .sub-title-name,
+.v-detail-lesson-box .content .title-name{
+    width: 100%;
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    font-size: 20px;
+    font-family: 'open_sanssemibold';
+    margin-top: 8px;
+    /*float: left;*/
+}
+.v-detail-lesson-box .content .sub-title-name{
+	font-family: 'open_sanslight';
+}
+.v-detail-lesson-box .content .publish-btn{
+    margin-top: 10px;
+}
+.v-detail-lesson-box .content .publish-btn .btn{
+    padding: 10px;
+    width: 100%;
+}
+.v-detail-lesson-box .outer-content .publish-btn{
+    margin-top: 10px;
+}
+.v-detail-lesson-box .outer-content .publish-btn .btn{
+    padding: 10px;
+    width: 100%;
+}
+.v-detail-lesson-box .title .title-price{
+    width: 32px;
+    color: #4c4c4c;
+    float: right;
+    text-align: right;
+}
+.v-detail-lesson-box .outer-conten,
+.v-detail-lesson-box .content{
+    /*font-family: 'open_sanslight';*/
+    /*padding: 0px 10px 10px 10px;*/
+    font-size: 12px;
+}
+.v-detail-lesson-box .content .content-title{
+    /*color: #1481a5;*/
+    /*font-family: 'open_sansregular';*/
+    font-size: 12px;
+    margin-top: 8px;
+}
+.v-detail-lesson-box .content .content-price{
+    color: #1481a5;
+    font-family: 'open_sanssemibold';
+    font-size: 16px;
+    margin-top: 8px;
+}
+.v-detail-lesson-box .content .content-text{
+    /*font-family: 'open_sanslight';*/
+    font-size: 12px;
+}
+.v-detail-lesson-box .content .content-text .grade-age{
+    color: #8a8a8a;
+}
+.v-detail-lesson-box .content .content-text .grade-age-val{
+    color: #1b1b1b;
+}
+.v-detail-lesson-box .content .content-text.fixed-height-level{
+    height: 30px;
+}
+.v-detail-lesson-box .content .free-class-mobile,
+.v-detail-lesson-box .content .free-class{
+    position: absolute;
+    top: 30px;
+    right: 10px;
+}
+.v-detail-lesson-box .content .free-class-mobile{
+    top: 0px;
+    right: 0px;
+}
+.v-detail-lesson-box .content .free-class-mobile img,
+.v-detail-lesson-box .content .free-class img{
+    width: 32px;
+}
+.v-detail-lesson-box .content .free-class-mobile img{
+    width: 38px;
+}
+
+.v-detail-lesson-box .user-container{
+    /*position: absolute;
+    bottom: 10px;*/
+    width: 100%;
+}
+.v-detail-lesson-box .user-container .left-div,
+.v-detail-lesson-box .user-container .right-div{
+    display: table-cell;
+    vertical-align: middle;
+}
+.v-detail-lesson-box .user-container .right-div{
+    padding-left: 5px;
+}
+.v-detail-lesson-box .user-container .right-div .rating img{
+    width: 12px; height: 12px;
+}
+.v-detail-lesson-box .user-container .user-img{
+    width: 50px;
+    height: 50px;
+    line-height: 42px;
+    border: 1px solid #CCC;
+    margin-top: 10px;
+}
+.v-detail-lesson-box .user-container .user-name{
+    width: 108px;
+    /*font-family: 'open_sansregular';*/
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'open_sanssemibold';
+    font-size: 14px;
+}
+.v-detail-lesson-box .content .user-container .right-div .yellow-rating-star{
+    float: left;
+    width: auto;
+    padding: 0px;
+    /* THIS IS HIDDEN ONLY FOR SOME TIME PERIOD WE WILL ENABLE THIS AGAIN WHEN WE WILL HAVE DATA */
+    display: none;
+}
+.v-detail-lesson-box .content .user-container .right-div .yellow-rating-star i.fa-star{
+    padding: 0px;
+}
+/* HORIZONTAL CARD FINISHED */
+
+
+.heading-text,
+.child-component /deep/ .heading-text{
+	font-size: 16px;
+    width: calc(100% - 30px);
+    float: left;
+    color: #000;
+}
+.heading-edit,
+.child-component /deep/ .heading-edit{
+    margin-top: 0px;
+    width: auto !important;
+	text-align: right;
+    float: right;
+    cursor: pointer;
+    /*padding-right: 10px;*/
+}
+.child-component /deep/ p.text-container{
+	font-size: 13px;
+	color: #4c4c4c;
+}
+.child-component /deep/ .editor-text-data p{
+	margin: 0px;
+	font-size: 13px;
+}
+.child-component /deep/ .bottom-cta-bar{
+	text-align: right;
+	float: right;
+}
+
+
+.session-detail-container,
+.session-schedule-detail-container{
+	padding-left: 0px;
+	padding-right: 15px;
+}
+.fees-detail-container{
+	padding-left: 0px;
+	padding-right: 0px;
+}
+.sub-section-box{
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	padding: 10px 15px;
+	height: 175px;
+}
+.sub-section-box .data-content table tr td{
+	vertical-align: top;
+    padding: 4px 0px;
+}
+.sub-section-box .data-content .data-content-lable,
+.sub-section-box .data-content.session-detail .data-content-lable{
+	font-size: 13px;
+	color: #4c4c4c;
+}
+.sub-section-box .data-content .data-content-val,
+.sub-section-box .data-content.session-detail .data-content-val{
+	font-size: 13px;
+	color: #1b1b1b;
+}
+.sub-section-box .data-content .data-content-lable,
+.sub-section-box .data-content.session-detail .data-content-lable{
+	width: 65%;
+}
+.sub-section-box .data-content .data-content-val,
+.sub-section-box .data-content.session-detail .data-content-val{
+	width: 35%;
+}
+
+
+.sub-section-box .data-content.schedule-detail .data-content-lable{
+	width: 25%;
+}
+.sub-section-box .data-content.schedule-detail .data-content-val{
+	width: 75%;
+}
+.sub-section-box .data-content.fees-detail .data-content-lable{
+	width: 60%;
+}
+.sub-section-box .data-content.fees-detail .data-content-val{
+	width: 40%;
+}
+
+
+.edit-schedule-container{
+    min-width: 320px;
+    max-width: 425px;
+}
+.edit-schedule-container{
+    min-height: 320px;
+    max-height: 425px;
+}
+
+
+.editing-schedule-tooltip{
+    min-width: 320px;
+    min-height: 105px;
+
+    float: left;
+    font-size: 12px;
+    padding:15px;
+    text-align: left;
+}
+.editing-session-tooltip{
+    min-width: 320px;
+    min-height: 105px;
+
+    float: left;
+    font-size: 12px;
+    padding:15px;
+    text-align: left;
+}
+.editing-fees-tooltip{
+    min-width: 981px;
+    min-height: 105px;
+
+    float: left;
+    font-size: 12px;
+    padding:15px;
+    text-align: left;
+}
+.change-lesson-picture{
+    min-height: 215px;
+    max-height: 500px;
+}
+.change-lesson-picture .info-text,
+.change-lesson-picture .info-text-2{
+    margin: 0px auto;
+    width: 90%;
+    font-size: 12px;
+    text-align: left;
+}
+.change-lesson-picture .info-text-2{
+    margin-top: 10px;
+}
+.change-lesson-picture .info-text span{
+    display: inline;
+}
+.change-lesson-picture .bluefont{
+    color: #1481A5;
+}
+
+
+@media (width: 1024px) {
+    .sub-section-box{
+        height: 212px;
+    }
+    .session-schedule-detail-container{
+        width: 65%;
+    }
+    .fees-detail-container{
+        width: 35%;
+    }
+}
+@media (max-width: 991px) and (min-width: 768px) {
+	.editlesson-container-page .right-container{
+		width: 100%;
+		margin-top: 15px;
+	}
+	.editlesson-container-page .left-container .v-detail-lesson-box{
+		margin: 0px auto;
+	}
+
+	.session-detail-container,
+	.session-schedule-detail-container{
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+	.fees-detail-container{
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+	.sub-section-box{
+		height: 210px;
+	}
+
+	.fees-detail-container,
+	.schedule-detail-container{
+		margin-top: 15px;
+	}
+
+    /* VERTICAL CARD */
+    .editlesson-container-page .left-container{
+        float: none;
+        text-align: center;
+        margin: 0px auto;
+        width: 100%;
+        padding: 0px 15px;
+    }
+    .v-detail-lesson-box{
+        margin: 0px auto;
+        width: 100%;
+        /*height: 160px;*/
+        height: 100px;
+        max-width: 768px;
+    }
+    .v-detail-lesson-box .title,
+    .v-detail-lesson-box .content{
+        float: left;
+    }
+    .v-detail-lesson-box .content{
+        width: calc(100% - 197px);
+    }
+    .v-detail-lesson-box .content .basic-info{
+        width: 50%;
+        height: 100px;
+        padding: 0px 10px;
+    }
+    .v-detail-lesson-box .content .user-container{
+        width: 50%;
+        height: 60px;
+        float: left;
+    }
+    .v-detail-lesson-box .content .publish-btn{
+        /*display: none;*/
+        float: left;
+        margin-top: 0px;
+    }
+    .v-detail-lesson-box .content .publish-btn .btn{
+        padding: 5px 8px;
+    }
+    /*.v-detail-lesson-box .outer-publish-btn{
+        display: block;
+        float: left;
+        width: 100%;
+        margin-top: 10px;
+    }*/
+    /* VERTICAL CARD */
+}
+@media (max-width: 768px){
+	.editlesson-container-page .right-container{
+		width: 100%;
+		margin-top: 15px;
+	}
+	
+    /* VERTICAL CARD */
+    .editlesson-container-page .left-container{
+		float: none;
+        text-align: center;
+        margin: 0px auto;
+        width: 100%;
+        padding: 0px 15px;
+	}
+    .v-detail-lesson-box{
+        margin: 0px auto;
+        width: 100%;
+        /*height: 160px;*/
+        height: 100px;
+        max-width: 768px;
+    }
+    .v-detail-lesson-box .title,
+    .v-detail-lesson-box .content{
+        float: left;
+    }
+    .v-detail-lesson-box .content{
+        width: calc(100% - 197px);
+    }
+    .v-detail-lesson-box .content .basic-info{
+        width: 50%;
+        height: 100px;
+        padding: 0px 10px;
+    }
+    .v-detail-lesson-box .content .user-container{
+        width: 50%;
+        height: 60px;
+        float: left;
+    }
+    .v-detail-lesson-box .content .publish-btn{
+        /*display: none;*/
+        float: left;
+        margin-top: 0px;
+    }
+    .v-detail-lesson-box .content .publish-btn .btn{
+        padding: 5px 8px;
+    }
+    /*.v-detail-lesson-box .outer-publish-btn{
+        display: block;
+        float: left;
+        width: 100%;
+        margin-top: 10px;
+    }*/
+    /* VERTICAL CARD */
+
+
+
+	.session-detail-container,
+	.session-schedule-detail-container{
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+	.fees-detail-container{
+		padding-left: 0px;
+		padding-right: 0px;
+	}
+	
+	.fees-detail-container,
+	.schedule-detail-container{
+		margin-top: 15px;
+	}
+}
+
+@media (max-width: 414px){
+    /* VERTICAL CARD */
+    /*.editlesson-container-page .left-container{
+        float: none;
+        text-align: center;
+        margin: 0px auto;
+        width: 100%;
+        padding: 0px 15px;
+    }*/
+
+    .v-detail-lesson-box{
+        height: 160px;
+        /*margin: 0px auto;
+        width: 100%;
+        height: 100px;
+        max-width: 768px;*/
+    }
+
+    .v-detail-lesson-box .title,
+    .v-detail-lesson-box .content{
+        float: left;
+    }
+    .v-detail-lesson-box .title{
+        width: 148px;
+        height: 76px;
+    }
+    
+    
+    .v-detail-lesson-box .content{
+        width: calc(100% - 148px);
+    }
+    .v-detail-lesson-box .content .basic-info{
+        width: 100%;
+        height: 76px;
+        padding: 0px 10px;
+    }
+    .v-detail-lesson-box .content .sub-title-name, 
+    .v-detail-lesson-box .content .title-name{
+        margin-top: 2px;
+    }
+    .v-detail-lesson-box .content .sub-title-name, 
+    .v-detail-lesson-box .content .title-name{
+        margin-top: 2px;
+    }
+    .v-detail-lesson-box .content .publish-btn,
+    .v-detail-lesson-box .content .user-container{
+        display: none;
+    }
+    .v-detail-lesson-box .outer-content .publish-btn,
+    .v-detail-lesson-box .outer-content .user-container{
+        display: block;
+        float: left;
+        width: 50%;
+        max-height: 80px;
+    }
+    /* VERTICAL CARD */
+}

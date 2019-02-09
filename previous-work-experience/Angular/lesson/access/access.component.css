@@ -1,0 +1,29 @@
+.message-container{
+	margin: 100px 0px 0px 0px;
+}
+.msg_container{
+	margin: 10px 0px;
+	font-size: 16px;
+	color: #1b1b1b;
+	font-family: "open_sanssemibold";
+}
+.small-txt{
+	margin: 10px 0px;
+	font-size: 14px;
+	color: #4c4c4c;
+}
+.image-handler{
+	text-align: center;
+    margin: 100px auto 0px auto;
+}
+.mini-text{
+	font-size: 12px;
+}
+/*
+
+
+@media only screen and (max-width: 667px){
+	.image-handler{
+		max-width: 200px;
+	}
+}*/

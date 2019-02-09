@@ -1,0 +1,49 @@
+<div class="row">
+	<div class="col-md-6 col-sm-6 col-xs-12">
+		<div class="tm-container">
+			<div class="heading">{{'taught_by' | translate}}</div>
+			<div class="content">
+				<div class="user-img img-container">
+					<img class="img-responsive pointer" [src]="commonService.getProfileImage(objectData?.tmuser?.profileImage,objectData?.tmuser?._id)" (error)="commonService.setDefaultProfileImage($event)" (click)="redirectOnPublicView()">
+				</div>
+				<div class="info">
+					<div class="name pointer" (click)="redirectOnPublicView()">{{ objectData?.tmuser?.name?.full | name:objectData?.tmuser?.fname: objectData?.tmuser?.lname }}</div>
+					<div class="address"><i class="fa fa-map-marker"></i> <span>{{ {address: objectData?.tmuser?.address, unitno: objectData?.tmuser?.unitno} | address:'short' }} </span></div>
+					<button *ngIf="this.objectData && userViewMode=='PARENT'" class="btn btn-primary margin-top-10" (click)="commonService.contactTm(4,objectData?.tmuser)">{{'contact' | translate}} {{objectData?.tmuser?.fname}}</button>
+				</div>
+				<!-- <div class="make-me-host" *ngIf="this.objectData && userViewMode=='PARENT'"></div> -->
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6 col-sm-6 col-xs-12">
+		<div class="host-container">
+			<div class="heading">{{'hosted_by' | translate}}</div>
+			<div class="content">
+				<div class="user-img img-container">
+					<img class="img-responsive" [src]="commonService.getProfileImage(objectData?.hostuser?.profileImage,objectData?.hostuser?._id)" (error)="commonService.setDefaultProfileImage($event)">
+				</div>
+				<ng-container *ngIf="!objectData?.hostuser">
+					<div class="info">
+						{{'not_yet_decided' | translate}}
+					</div>
+				</ng-container>
+				<ng-container *ngIf="objectData?.hostuser">
+					<div class="info">
+						<!-- <div class="name">{{ request?.parent?.name?.full | name:request?.parent?.fname: request?.parent?.lname }}</div> -->
+						<div class="name">{{ objectData?.hostuser?.name?.full | name:objectData?.hostuser?.fname: objectData?.hostuser?.lname }}</div>
+						<div class="address"><i class="fa fa-map-marker"></i> <span>{{ {address: objectData?.hostuser?.address, unitno: objectData?.hostuser?.unitno } | address:'full'}}</span></div>
+					</div>
+				</ng-container>
+				
+				<div class="make-me-host" *ngIf="isEditable && !isTmHost && isTm">
+					<div class="circle-box blue">
+						<label class="gray_blue_checkox">
+						    <input name="makemehost" type="checkbox" [(ngModel)]="isTmHost" (click)="makeMeHost($event,objectData?.tmuser?._id)">
+						    <span class="chekboximg"></span><span class="label-content">{{'make_me_host' | translate}}</span>
+						</label>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

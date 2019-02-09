@@ -1,0 +1,77 @@
+<div>
+	<div class="dashbaord-list-view-subpannal" *ngFor="let tn of lessons;">
+		<div class="list-view-top" (click)="commonService.redirectionTNDetailPage(tn)">
+			<div class="list-view-name" title="{{ tn.name }}">{{ tn?.name }}</div>
+			<div *ngIf="type==2" class="rest-info">
+				<div class="list-view-same list-view-miles">
+					<span><i class="fa fa-map-marker"></i></span>
+					{{ tn?.fullAddress }}
+				</div>
+				<div class="list-view-same view-student">
+					{{'enrolled' | translate}}:  <span>{{ tn?.total.accepted }} </span>
+				</div>
+
+				<div class="list-view-same view-student">
+					{{'new_requests' | translate}}:  <span>{{ tn?.total.requested }} </span>
+				</div>
+
+				<div class="list-view-same view-student notside-border">
+					{{'waitlisted' | translate}}:   <span>{{ tn?.total.waitlisted }} </span>
+				</div>
+			</div>
+
+			<div *ngIf="type!=2" class="rest-info">
+				<div class="list-view-same list-view-miles">
+			    	<span><i class="fa fa-home"></i></span>
+			    	{{ tn?.fullAddress }}
+			  	</div>
+			  	<div class="list-view-same view-student">
+			    	{{'student' | translate}} <span class="blue">{{ tn?.total.students }}</span>
+			  	</div>
+			  	<div class="list-view-same view-host">
+			    	{{'host' | translate}} <span class="blue" *ngIf="tn?.hostId"><i class="fa fa-check"></i></span><span class="blue" *ngIf="!tn?.hostId"><i class="fa fa-times"></i></span>
+			  	</div>
+			  	<div class="list-view-same view-host">
+			    	<span><i class="fa fa-calendar"></i></span>
+			    	<span *ngIf="tn?.createdOn">{{ tn?.createdOn | timeAgo }}</span>
+			    	<span *ngIf="!tn?.createdOn"> - </span>
+			  	</div>
+			  	<div class="list-view-same view-message notside-border">
+			  		<div class="notification">
+					    <div class="head-notifi-inner">
+					        <a href="javascript:void(0)">
+					          <i aria-hidden="true" class="fa fa-commenting-o"></i>
+					          <span class="head-notific">{{tn?.totalUnseenMsg}}</span>
+					        </a>
+					    </div>
+					</div>
+			  	</div>
+			  	<div class="list-view-new" *ngIf="tn?.status=='ACTIVE'">{{'new' | translate}}</div>
+			</div>
+		</div>
+		<div class="list-view-top">
+			<div class="list-view-same btm-waitng noteIcon" title="Add Note">
+				<span><i class="fa fa-file-text"></i></span>
+			</div>
+			<div class="list-view-same btm-waitng noteTextcnt">
+				<div (click)="openAddNote(tn)" id="add-note-{{tn?._id}}" *ngIf="tn?.note" title="Click here for edit">{{ tn?.note }}</div>
+				<div (click)="openAddNote(tn)" id="add-note-{{tn?._id}}" *ngIf="!tn?.note" title="Click here for add">Add Note</div>
+				<div *ngIf="tnId==tn?._id">
+					<form [formGroup]="addNoteForm" (ngSubmit)="saveTalentNote(addNoteForm.valid)"> 
+						<div class="noteText">
+							<textarea placeholder='{{ "Add a note" | translate }}' name="note" formControlName="note"></textarea> 
+							<div *ngIf="isSubmit && addNoteForm.controls['note'].hasError('required')" class="error">
+					            {{ "Please enter your note fot this talentnook." | translate }}
+					        </div>
+						</div>
+						<div class="noteSubmit">
+							<div class="icons">
+								<i (click)="saveTalentNote(addNoteForm.valid)" class="fa fa-check" title="Add Note"></i>&nbsp;&nbsp;<i class="fa fa-times" (click)="closeAddNote(tn)" title="Cancel"></i>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>		
+	</div>
+</div>

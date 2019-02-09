@@ -1,0 +1,20 @@
+<app-dashboardfeatured [dashboardTitle]="dashboardTitle"></app-dashboardfeatured>
+<section class="dashbaord-content-section">
+ 	<div class="container">
+    	<div class="row">
+       		<div class="col-xs-12 col-sm-12 col-md-12">          		
+              <!-- NOW MOVED IN THE HEADER -->
+              <!-- <div class="leftpannal">
+             		<app-leftnavbar [selectionType]="selectionType" [leftpanelViewmode]="leftpanelViewmode"></app-leftnavbar>
+          		</div> -->
+              <!-- NOW MOVED IN THE HEADER -->
+              <!-- <div class="dashbaord-list-view-rightsection"> -->
+              
+              <div class="dashbaord-right-section">
+                  <app-rightpanel [hasTalentnooks]="hasTalentnooks" [dataLoaded]="dataLoaded" [errorMessage]="errorMessage" [errorMessageLink]="errorMessageLink" [published]="published" [showInactive]="showInactive" [gridData]="gridData" [user]="user" [rightpanelViewmode]="rightpanelViewmode" [lessons]="lessons" [talentnookPayments]="talentnookPayments"></app-rightpanel>
+              </div>
+          	</div>
+        </div>
+    </div>
+</section>
+

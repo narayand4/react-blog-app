@@ -1,0 +1,215 @@
+<a *ngIf="verifiedAccess && user._id != tmuser._id && user.checkrole.isParent" class="tmfeedbackbutton" routerLink="/tmfeedback" [queryParams]="{ tm: tmuser?._id }"><button>Feedback</button></a>
+<div class="tn-launch-operation" *ngIf="verifiedAccess">
+    <!-- MAIN HEADER COMPONENT -->
+    <div class="talent-master-outer ">
+        <app-tnheader #tnheader [talentnook]="talentnook" [isJoinRequest]="isJoinRequest" [msgData]="msgData" [parentComponent]="parentComponent" [userViewMode]="userViewMode" (acceptDeclineRequest)="saveAcceptDeclineRequest($event)" (askForValidationORConfirmation)="askForValidationORConfirm($event)"></app-tnheader>
+    </div>
+
+    <!-- JUST TO OCCUPY THE SAME SPACE AS IT'S HADER HAVE THE SPCE TO MAINTAIN THE TOP SPACE HEIGHT AND SUBE ELEMENT CAN BE POSITIONED AUTOMATICALLY AT APPROPRIATE HEIGHT OR AFTER TOP SPACING -->
+    <!-- ACTUAL HEADER IS IN TN HEADER COMPONENT THIS IS JUST PLACEHOLDER TO OCCUPY SAME SPACE -->
+    <div class="launch-space-plachholder"> 
+        <div class="container page-title-txt">
+            <div class="row">
+                <div class="col-md-12 col-sm-12 col-xs-12 no-padding">                
+                    <div class="col-md-3 col-sm-12 col-xs-12 portrait align-center below-ipad-hide align-left">
+                        <div class="back-button">
+                            <!-- <a  routerLink="/mylessons"> -->
+                            <a href="javascript:void(0);">
+                                <div class="btn mytalentnnok-btn">
+                                    <span><i class="fa fa-long-arrow-left"></i></span>
+                                    {{'my_lessons' | translate}}
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-sm-12 col-xs-12 portrait align-center ">
+                        <ng-container *ngIf="talentnook?.status=='ACTIVE'">
+                            <!-- <a class="tn-public-view title-txt" routerLink="/lesson/{{talentnook?._id}}"> -->
+                            <a class="tn-public-view title-txt" href="javascript:void(0);">
+                                <!-- {{'request_for' | translate}} {{ talentnook?.name }} -->
+                                <ng-container *ngIf="talentnook?.name && tnName">{{ tnName }}</ng-container>
+                            </a>
+                        </ng-container>
+                        <ng-container *ngIf="talentnook?.status!='ACTIVE'">
+                            <!-- {{'request_for' | translate}} {{ talentnook?.name }} -->
+                            <span class="title-txt"><ng-container *ngIf="talentnook?.name && tnName">{{ tnName }}</ng-container></span>
+                        </ng-container>
+                        
+                        <div class="" *ngIf="talentnook?.isGrandfathering && userViewMode=='TM'">
+                            <img class="img-responsive inline-block gf_icon" src="assets/images/gf-white-talentnook.png" alt="gf-white-talentnook" title="{{'transferred_to_talentnook' | translate}}">
+                            {{'transferred_to_talentnook' | translate}}
+                            <!-- <span><i class="fa fa-download"></i></span> -->
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 col-xs-12 align-right no-padding portrait align-center ">
+                        <div class="below-ipad-show">
+                            <!-- <a  class="back-button-tn" routerLink="/mylessons"> -->
+                            <a class="back-button-tn" href="javascript:void(0);">
+                                <i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                        <div class="notification">
+                            <div class="head-notifi-inner">
+                                <a aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="javascript:void(0)" role="button">
+                                  <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                  <span class="head-notific">{{msgData?.unseenMsg}}</span>
+                                </a>
+                            </div>
+                        </div>
+                        <ng-container *ngIf="parentComponent=='operations' && userViewMode=='TM'">
+                            <div class="cta-buttons">
+                                <button class="btn btn-default" *ngIf="talentnook?.status=='SUSPENDED'">{{'activate' | translate}}</button>
+                                <button class="btn btn-default" *ngIf="talentnook?.status=='ACTIVE'">{{'suspend' | translate}}</button>
+                                <button class="btn btn-primary" *ngIf="talentnook?.status!='CLOSED' && talentnook?.status!='COMPLETED'">{{'mark_as_complete' | translate}}</button>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="parentComponent=='launch'">
+                            <!-- NOW THERE IS NO EDIT WE WILL HAVE INLINE EDIT FOR SCHEDULE -->
+                            <!-- <div class="cta-buttons" *ngIf="userViewMode=='PARENT'">
+                                <button class="btn default-button skyblue" (click)="editRequest()">{{'edit_my_request' | translate}}</button>
+                            </div> -->
+                            <div class="cta-buttons" *ngIf="userViewMode=='TM'">
+                                <button class="btn btn-primary" *ngIf="talentnook?.status=='REQUESTED'">{{'acknowledge' | translate}}</button>
+                                <button class="btn btn-primary" *ngIf="talentnook?.status=='ACKNOWLEDGED'">{{'launch' | translate}}</button>
+                                <button class="btn btn-default">{{'decline' | translate}}</button>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUB HEADER COMPONENT -->
+    <div class="launch-subheading-outer" *ngIf="header_msg && parentComponent=='launch'">
+        <div class="container">
+            <div class="col-md-12 col-sm-12 col-xs-12 header_msg">
+                {{header_msg}}
+            </div>
+        </div>
+    </div>
+
+    <!-- LESSON COMPONENT -->
+    <div class="launch-lesson-outer lavender-background" *ngIf="parentComponent=='operations'" id="lessons-container">
+        <div class="container">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-padding tooltipcontainer">
+            <app-session #lessonCom (save)="saveLesson($event)" [objectData]="talentnook" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [lessonEdit]="lessonEdit" [parentComponent]="parentComponent" [userViewMode]="userViewMode"></app-session>
+            </div>
+        </div>
+    </div>
+
+	<!-- LESSON DETAIL COMPONENT -->
+    <div class="launch-fee-structure-outer ">
+        <div class="container" id="lessonsDetailSection">
+            <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+            <app-lessondetail #lessonDetailCom (save)="saveLessonDetail($event)" [data]="talentnook" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [lessonDetailEdit]="lessonDetailEdit" [parentComponent]="parentComponent"></app-lessondetail>
+            </div>
+        </div>
+    </div>
+
+    <!-- HOST AND TM COMPONENT -->
+    <div class="launch-host-outer">
+        <div class="container" id="hostSection">
+            <app-hostdetail #hostDetailCom (save)="saveHostDetail($event)" [userContainer]="userContainer" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [hostDetailEdit]="hostDetailEdit" [parentComponent]="parentComponent" [userViewMode]="userViewMode"></app-hostdetail>
+        </div>
+    </div>
+
+    <!-- REQUEST LIST COMPONENT -->
+    <div class="requestlist-outer" id="requestlist-container">
+        <div class="container tooltipcontainer">
+            <app-requestlist #requestlistCom (save)="saveRequestlist($event)" (saveHostDetail)="saveHostDetail($event)" [data]="talentnook" [isEditable]="isParentEditable" [isSingleForm]="isSingleForm" [requestListEdit]="requestListEdit" [userViewMode]="userViewMode" [parentComponent]="parentComponent" [userContainer]="userContainer"></app-requestlist>
+        </div>
+    </div>
+
+    <!-- OUTLINE COMPONENT -->
+	<div class="mypolicies-section lavender-background no-border">
+        <div class="container" id="outlineSection">
+            <app-outline #lessonOutlineCom (save)="saveLessonOutlineDetail($event)" [data]="talentnook" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [lessonOutlineEdit]="lessonOutlineEdit" [parentComponent]="parentComponent"></app-outline>
+        </div>
+    </div>
+
+	<!-- FEES COMPONENT -->
+	<div class="fees-structure-outer lavender-background" id="feesSection">
+        <div class="container">
+            <app-fees #feesCom (save)="saveFeesDetail($event)" [data]="talentnook" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [feesEdit]="feesEdit" [gridViewMode]="gridViewMode" [parentComponent]="parentComponent"></app-fees>
+        </div>
+    </div>
+
+    <!-- POLICY COMPONENT -->
+    <div class="mypolicies-section launch-section">
+	    <div class="container" id="policySection">
+	        <app-policy #policyCom (save)="savePolicyDetail($event)" [data]="talentnook" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [policyEdit]="policyEdit" [parentComponent]="parentComponent"></app-policy>
+	    </div>
+	</div>
+
+	<!-- MESSAGE BOARD COMPONENT -->
+    <div class="mypolicies-section messageboard-section">
+        <div class="container" id="messageBoardSection">
+	       <app-messageboard #messageBoardCom [dataLoaded]="dataLoaded" [userViewMode]="userViewMode" [launchOperation]="launchOperation" [userContainer]="userContainer" [talentnook]="talentnook"></app-messageboard>
+        </div>
+    </div>
+
+</div>
+<!-- Modal message alert -->
+<div class="modal fade common-modal" id="alert-pop" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel">
+  <div class="modal-dialog" role="document">
+    <!-- Modal content--> 
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="alertModalLabel">{{ "tm_launch_hi" | translate }} {{ user?.name?.full | name:user?.fname: user?.lname: true }},</h4>
+        <!-- <h4 class="modal-title" id="alertModalLabel">{{ "alert_tmprofile_title" | translate }}</h4> -->
+      </div>
+
+      <div class="modal-body">
+        <div class="invite-a-friend-msg align-left">
+            {{ "alert_tnlaunch_complete" | translate }} 
+        </div>
+        <!-- <div class="invite-a-friend-msg align-left" [innerHtml]="launch_tnlaunch_info | safeHtml"></div> -->
+        <div class="invite-a-friend-msg align-left">
+            <ng-container *ngFor="let compo of buggyComponent; index as i">
+                <div class="clearboth">{{i+1}}.
+                    <span *ngIf="compo=='lessonDetailSection'">{{'sesson_details' | translate}}</span>
+                    <span *ngIf="compo=='hostSection'">{{'host_decided' | translate}}</span>
+                    <span *ngIf="compo=='pickScheduleSection'">{{'schedule_decided' | translate}}</span>
+                    <span *ngIf="compo=='feesSection'">{{'fee_structure' | translate}}</span>
+                    <span *ngIf="compo=='studentListSection'">{{'student_accepted_required' | translate}}</span>
+                </div>
+            </ng-container>
+        </div>
+        <div class="invite-a-friend-buttons align-center">
+            {{ "talentnook_thanks" | translate }} 
+            {{ "talentnook_team" | translate }} 
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+<!-- Modal message alert-->
+
+
+<!-- Modal message alert -->
+<div class="modal fade common-modal" id="info-box-popup" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel">
+  <div class="modal-dialog" role="document">
+    <!-- Modal content--> 
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="alertModalLabel">{{ infoBoxTitle }}</h4>
+        <!-- <h4 class="modal-title" id="alertModalLabel">{{ "alert_tmprofile_title" | translate }}</h4> -->
+      </div>
+
+      <div class="modal-body">
+        <div class="invite-a-friend-msg align-left">
+          {{ infoBoxDescription }} 
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Modal message alert-->

@@ -1,0 +1,30 @@
+.list-view-same.view-message {
+    position: relative;
+}
+.list-view-same.notside-border {
+    border-right: 0;
+}
+.list-view-same {
+    border-right: 1px solid #d9d9d9;
+    color: #000;
+    float: left;
+    font-size: 12px;
+    padding: 0 10px;
+}
+
+
+@media (max-width: 767px){
+    .head-notific{
+        top: 0px;
+    }
+    .head-notifi-inner{
+        margin-top: 0px;
+    }
+    .head-notifi-inner a i{
+        font-size: 22px;
+    }
+	.list-view-same.view-message{
+	    /*border-bottom: 1px solid #d9d9d9;*/
+	    padding: 1px 5px;
+	}
+}

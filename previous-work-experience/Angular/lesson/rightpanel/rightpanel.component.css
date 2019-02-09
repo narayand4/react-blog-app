@@ -1,0 +1,287 @@
+.mapview-pannal {
+    float: left;
+    margin: 0px;
+    width: 100%;
+}
+.parent-list-filters{
+	float: left;
+}
+.parent-list-datacontainer{
+    clear: both;
+    float: left;
+    margin-top: 10px;
+}
+.datacontainer{
+	clear: both;
+    float: left;
+	border: 1px solid #ebebeb;
+	border-radius: 8px;
+	margin: 0px;
+	width: 100%;
+    padding: 0px;
+    min-height: 95px;
+    margin: 8px 0px;
+    display: table;
+    font-size: 13px;
+}
+.datacontainer:hover{
+	border: 1px solid #9fdcf1;
+	/*box-shadow: 0px 0px 12px -2px #00b4b7;*/
+	box-shadow: 0px 0px 12px 1px #ceecf6;
+}
+.tn_not_found{
+	text-align: center;
+    font-family: 'open_sanssemibold';
+    margin: 20px auto;
+    font-size: 20px;
+}
+.tm-cell,
+.host-cell,
+.tn-cell{
+	padding: 12px 5px; 
+	margin: 0px;
+    min-height: 93px;
+}
+
+.tm-cell{
+	background: #f9f9f9;
+	border-right: 1px solid #ebebeb;
+	border-radius: 8px 0px 0px 8px;
+}
+.tm-container{
+	display: table;
+}
+.tm-info,
+.tm-img-container{
+	display: table-cell;
+    vertical-align: top;
+}
+.tm-info{
+	padding-left: 6px;
+	word-break: break-word;
+}
+.tmimg-container{
+	width: 70px;
+    height: 70px;
+    line-height: 60px;
+    border: 1px solid #dbdbdb;
+    background: #eee;
+}
+.tm-cell .tm-talent{
+	font-family: 'open_sanssemibold';
+	/*font-size: 13px;*/
+}
+.tm-cell .tm-heading,
+.host-cell .host-heading{
+	/*font-family: 'open_sanssemibold';*/
+	font-family: 'open_sansbold';
+}
+
+.gray_heading{
+	color: #555;
+}
+
+
+.host-cell{
+    display: table;
+}
+.hostimg-container{
+	width: 45px;
+    height: 45px;
+    line-height: 35px;
+    border: 1px solid #dbdbdb;
+    background: #eee;
+    display: table-cell;
+}
+.host-info,
+.host-img-container{
+	display: table-cell;
+    vertical-align: top;
+}
+.host-img-container{
+	width: 50px;
+}
+.host-info{
+	padding-left: 10px;
+	word-break: break-word;
+}
+.host-address{
+	/*font-size: 13px;*/
+}
+.host-address i{
+	color: #03adba;
+	font-size: 16x;
+}
+
+.tn-cell{
+	display: table;
+}
+.tn-cell .tn-msg,
+.tn-cell .tn-student-list,
+.tn-cell .tn-time,
+.tn-cell .tn-fees{
+	padding: 0px 3px;
+	margin: 0px;
+}
+.student-list{
+	font-family: 'open_sanssemibold';
+	float: left;
+	clear: both;
+	/*font-size: 13px;*/
+}
+.tn-view-message{
+	margin-top: 10px;
+}
+.tn-view-message i{
+	font-size: 25px;
+    color: #03adba;
+}
+.tn-view-message .counts{
+    position: absolute;
+    top: 0px;
+    left: 18px;
+    border-radius: 50%;
+    height: 20px;
+    min-width: 20px;
+    color: #FFF !important;
+    background: #01aebc;
+    text-align: center;
+    padding: 2px;
+    font-size: 12px;
+    font-family: 'open_sanssemibold';
+}
+.no-data-found{
+    text-align: center;
+    margin: 10px auto;
+}
+
+.list-viewShowInactive .blue_checkox .chekboximg.small{
+    margin-top: 2px;
+}
+
+/* IMPORTED FROM UI SCREEN */
+
+.dashbaord-list-view-rightinner {
+    float: left;
+    width: 100%;
+}
+
+.dashbaord-list-view-rightinner .tn-nav-container {
+    background: #eff9fc;
+    float: left;
+    width: 100%;
+    border-bottom: 1px solid #ccc;
+    min-height: 42px;
+}
+.dashbaord-list-view-rightinner .lesson-nav{
+    padding-left: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    list-style: none;
+}
+.dashbaord-list-view-rightinner .lesson-nav.lesson-nav-tabs {
+    float: left;
+    width: 37%;
+    border: none;
+    min-height: 42px;
+    /*background: #eff9fc;*/
+    /*border-bottom: 1px solid #ccc;*/
+}
+
+.dashbaord-list-view-rightinner .lesson-nav-tabs > li {
+    border: medium none;
+    float: left;
+    margin: 0;
+    position: relative;
+    display: block;
+}
+
+.dashbaord-list-view-rightinner .lesson-nav-tabs > li > a {
+    border: none;
+    color: #000000;
+    font-size: 16px;
+    font-family: 'open_sanssemibold';
+    border-radius: 0px;
+    position: relative;
+
+    margin-right: 2px;
+    line-height: 1.42857143;
+    padding: 10px 15px;
+    display: block;
+}
+
+.dashbaord-list-view-rightinner .lesson-nav-tabs > li.active > a,
+.dashbaord-list-view-rightinner .lesson-nav-tabs > li.active > a:focus,
+.dashbaord-list-view-rightinner .lesson-nav-tabs > li.active > a:hover{
+    border: none;
+    background: #0bb0bf;
+    color: #ffffff;
+    border-radius: 0px;
+    z-index: 9;
+}
+
+.dashbaord-list-view-rightinner .lesson-nav > li > a:focus, .lesson-nav > li > a:hover , .lesson-nav > li > a:focus {
+    border: none;
+    background: #0bb0bf;
+    color: #ffffff;
+    border-radius: 0px;
+}
+
+
+.dashbaord-list-view-rightinner .lesson-nav-tabs > li.active > a::after,
+.dashbaord-list-view-rightinner .lesson-nav-tabs > li.hover > a::after {
+    background: #0bb0bf;
+    bottom: -10px;
+    content: "";
+    display: inline-block;
+    height: 20px;
+    position: absolute;
+    right: 39%;
+    transform: rotate(45deg);
+    width: 20px;
+}
+
+.dashbaord-list-view-rightinner .tab-content {
+    float: left;
+    width: 100%;
+}
+/* IMPORTED FROM UI SCREEN FINISH */
+
+
+
+
+/* RESPONSIVE STYLES */
+@media only screen and (max-width:768px) {
+	.tm-cell,
+    .host-cell,
+    .tn-cell{
+        min-height: 70px;
+        padding: 12px 10px;
+    }
+    .tm-cell{
+        border-radius: 8px 8px 0px 0px;
+    }
+}
+@media only screen and (max-width:767px) {
+    .remove-padding-margin-xs{
+        padding: 0px;
+        margin: 0px;
+    }    
+}
+@media only screen and (max-width:567px) {
+    .dashbaord-list-view-rightinner .lesson-nav-tabs>li.active>a:after, 
+    .dashbaord-list-view-rightinner .lesson-nav-tabs>li.hover>a:after{
+        display: none;
+    }
+    .list-viewShowInactive{
+        padding: 5px 0px 0px 5px;
+    }
+    .list-view-top-right {
+        float: left;
+        text-align: left;
+    }
+    .dashbaord-list-view-rightinner .lesson-nav.lesson-nav-tabs {
+        width: 100%;
+    }
+}
+/* RESPONSIVE STYLES */

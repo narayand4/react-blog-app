@@ -1,0 +1,386 @@
+<div class="row">
+	<div class="col-md-12 col-sm-12 col-xs-12">
+		<div class="heading col-md-12 col-sm-12 col-xs-12 no-padding">
+			<div><h4 class="tmheading-black">{{'students' | translate }} </h4></div>
+		</div>
+
+		<div class="cta-bar no-padding col-md-12 col-sm-12 col-xs-12" *ngIf="isEditable && (objectData?.students?.length>0)">
+			<div class="col-md-6 col-sm-6 col-xs-6 no-padding " [ngClass]="{'portrait-center': userViewMode=='TM'}">
+				<input *ngIf="userViewMode=='TM'" type="button" name="" value="{{'accept' | translate}}" (click)="acceptRequest(true)" class="btn btn-primary">
+
+				<!-- <input type="button" name="" value="{{'drop' | translate}}" (click)="dropRequest($event,false)" class="btn default-button blue"> -->
+				<input *ngIf="userViewMode=='TM' || isParentCanDrop(objectData?.students)" type="button" name="" value="{{'drop' | translate}}" (click)="dropRequest($event,false)" class="btn">
+
+				<ng-container *ngIf="parentComponent=='operations'">
+					<input *ngIf="userViewMode=='TM'" type="button" name="" value="{{'change_host' | translate}}" (click)="updateHostDetail()" class="btn btn-default">
+				</ng-container>
+				<ng-container *ngIf="parentComponent=='launch'">
+					<input *ngIf="userViewMode=='TM'" type="button" name="" value="{{'mark_as_host' | translate}}" (click)="updateHostDetail()" class="btn btn-default">
+				</ng-container>				
+			</div>
+			<div class="col-md-6 col-sm-6 col-xs-6 no-padding float-text-right" [ngClass]="{'portrait-center': userViewMode=='TM', 'portrait-margin-top-10': userViewMode=='TM'}" id="pick-schedule">
+				<ng-container *ngIf="parentComponent=='launch'">
+					<input *ngIf="userViewMode=='TM'" type="button" id="pick_a_schedule" (click)="showHidePickSchedule($event)" name="" value="{{'pick_a_schedule' | translate}}"class="btn btn-primary">
+				</ng-container>
+				<input type="button" name="" value="{{'invite_students' | translate}}" (click)="inviteStudent()" class="btn">
+			</div>
+			<div class="col-md-12 col-sm-12 col-xs-12 error" *ngIf="errorMsg">
+				{{errorMsg}}
+			</div>
+		</div>
+
+		<div class="request-bar-container no-padding col-md-12 col-sm-12 col-xs-12">
+			<ng-container *ngIf="!(objectData?.students?.length>0)">
+				<!-- <div class="col-md-12 align-center" *ngIf="parentComponent=='launch'">{{"no_request_available_for_the_moment" | translate }}</div> -->
+				<div class="col-md-12 align-center">{{"no_student_have_enrolled_yet" | translate }}</div>
+			</ng-container>
+			<!-- STUDENT LIST FROM REQUEST ON LAUNCH PAGE -->
+			<ng-container *ngIf="objectData?.students && parentComponent=='launch'">
+				<form [formGroup]="tnFormRequest" novalidate (ngSubmit)="save(tnFormRequest.value, tnFormRequest.valid, 'tnFormRequest')">
+					<div formArrayName="students">
+						<div class="request-bar no-padding col-md-12 col-sm-12 col-xs-12" *ngFor="let request of objectData?.students; index as i">
+							<div class="col-md-5 col-sm-12 col-xs-12 left-box-container" [formGroupName]="i">
+								<table width="100%">
+									<tr>
+										<td>
+											<table width="100%" class="student-column">
+												<tr>
+													<td class="checkbox-column">
+														<ng-container *ngIf="userViewMode == 'PARENT' && parentCanDrop(request) && isEditable">
+										                    <div class="check-box blue">
+											                    <label class="gray_blue_checkox">
+											                        <input formControlName="isSelected" type="checkbox">
+											                        <span class="chekboximg"></span>
+											                    </label>
+											                </div>
+														</ng-container>
+														<ng-container *ngIf="userViewMode == 'TM' && isEditable">
+										                    <div class="check-box blue">
+											                    <label class="gray_blue_checkox">
+											                        <input formControlName="isSelected" type="checkbox">
+											                        <span class="chekboximg"></span>
+											                    </label>
+											                </div>
+														</ng-container>
+													</td>
+													<td class="image-column">
+														<div class="userimage img-container">
+															<img class="img-responsive" [src]="commonService.getProfileImage(request?.parent?.profileImage,request?.parent?._id)" (error)="commonService.setDefaultProfileImage($event)">
+														</div>
+													</td>
+													<td class="userdetail" >
+														<div class="name" *ngIf="request?.currentStatus=='INVITED'">
+															<ng-container *ngIf="request?.parentemail">
+																{{ request?.parentemail }}
+															</ng-container>
+															<ng-container *ngIf="!request?.parentemail">
+																{{ request?.parent?.name?.full | name:request?.parent?.fname: request?.parent?.lname }}
+															</ng-container>
+														</div>
+														<div class="name" *ngIf="request?.currentStatus!='INVITED'">
+															{{ request?.parent?.name?.full | name:request?.parent?.fname: request?.parent?.lname }}
+														</div>
+														
+														<span class="blue"><i class="fa fa-map-marker"></i></span> 
+														<span>{{'distance' | geoDistance: request?.parent?.location?.coordinates[1]: request?.parent?.location?.coordinates[0]: objectData?.location?.coordinates[1]: objectData?.location?.coordinates[0]}} {{'away' | translate}}</span>
+													</td>
+													<td class="align-center payment-column">
+														<img *ngIf="request?.parent?.paymentSetupVerified && userViewMode == 'TM'" class="img-responsive payment-icon padding-bottom-5" src="assets/images/approved-payment-talentnook.png" title="{{'ttl_payment_verified' | translate}}">
+														<img *ngIf="!request?.parent?.paymentSetupVerified && userViewMode == 'TM'" class="img-responsive payment-icon padding-bottom-5" src="assets/images/not-approved-payment-talentnook.png" alt="not-approved-payment-talentnook" title="{{'ttl_payment_not_verified' | translate}}">
+														<img *ngIf="request?.parentWillingToHost" class="img-responsive willingtohost-icon padding-bottom-5" src="assets/images/willing-to-host-talentnook.png" alt="willing-to-host-talentnook" title="{{'ttl_willing_to_host' | translate}}">
+
+														<!-- IF USER INVITED AS GF -->
+														<img *ngIf="request?.currentStatus=='INVITED' && request?.isGrandfatheringInvite && userViewMode == 'TM'" class="img-responsive gf_icon padding-bottom-5" src="assets/images/gf-blue-talentnook.png" alt="gf-blue-talentnook" title="{{'transferred_to_talentnook' | translate}}">
+														<!-- IF USER INVITED AS GF AND PARENT ACCEPTED GF OPTION FOR HIM/HER -->
+														<img *ngIf="request?.currentStatus!='INVITED' && request?.isGrandfathering && userViewMode == 'TM'" class="img-responsive gf_icon padding-bottom-5" src="assets/images/gf-blue-talentnook.png" alt="gf-blue-talentnook" title="{{'transferred_to_talentnook' | translate}}">
+													</td>
+													<td class="portrait-hide-cell status-column">
+														<button class="default-btn {{ request?.currentStatus }}_btn">{{ request?.currentStatus }}</button>
+													</td>
+												</tr>
+												<tr class="portrait-show-row">
+													<td colspan="5">
+														<button class="default-btn {{ request?.currentStatus }}_btn">{{ request?.currentStatus }}</button>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+
+									<tr>
+										<td colspan="5">
+											<table width="100%">
+												<tr class="student-heading">
+													<td width="40%">
+														{{'student' | translate}}
+													</td>
+													<td>
+														{{'gender' | translate}}
+													</td>
+													<!-- AS PER THE SUMIT FEEDBACK WE NEED TO REMOVE THIS AGE COLUMN -->
+													<!-- <td class="userdetail">
+														{{'age' | translate}}
+													</td> -->
+													<td>
+														{{'grade' | translate}}
+													</td>
+												</tr>
+												<!-- <ng-container *ngFor="let student of request.students;"> -->
+												<tr class="student-info">
+													<td>
+														{{ request?.student?.name?.full | name:request?.student?.fname: request?.student?.lname }}
+													</td>
+													<td>
+														{{ request?.student?.gender }}
+													</td>
+													<!-- AS PER THE SUMIT FEEDBACK WE NEED TO REMOVE THIS AGE COLUMN -->
+													<!-- <td class="userdetail">
+														<span *ngIf="request?.student?.age">
+															{{ request?.student?.age }} {{'years' | translate}}
+														</span>
+														<span *ngIf="!request?.student?.age">--</span>
+													</td> -->
+													<td>
+														{{ request?.student?.grade | grade}}
+													</td>
+												</tr>
+												<!-- </ng-container> -->
+											</table>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="col-md-7 col-sm-12 col-xs-12 right-box-container">
+								<div *ngIf="isEditable && request?.parent?._id==userContainer?.user?._id && request?.requestedSchedule" class="padding-top-10 edit-shcedule">
+									<i class="fa fa-pencil-square-o add-editicon gray" (click)="editSchedule($event,request)"></i>
+								</div>
+								<div class="col-md-11 col-sm-11 col-xs-11 no-padding padding-top-5 padding-bottom-5 font-13" *ngIf="request.isFlexible">{{'has_a_flexible_schedule' | translate}}</div>
+								<div class="col-md-11 col-sm-11 col-xs-11 no-padding padding-top-5 padding-bottom-5 font-13" *ngIf="!hasData(request?.requestedSchedule)">{{'has_not_provided_availability_yet' | translate}}</div>
+								<table width="100%" *ngIf="hasData(request?.requestedSchedule)">
+									<tr class="heading">
+										<td *ngIf="request?.requestedSchedule?.sunday?.length">
+											{{'sunday' | translate}}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.monday?.length">
+											{{'monday' | translate}}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.tuesday?.length">
+											{{'tuesday' | translate}}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.wednesday?.length">
+											{{'wednesday' | translate}}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.thursday?.length">
+											{{'thursday' | translate}}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.friday?.length">
+											{{'friday' | translate}}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.saturday?.length">
+											{{'saturday' | translate}}
+										</td>
+									</tr>
+									<tr class="info">
+										<td *ngIf="request?.requestedSchedule?.sunday?.length">
+											{{request?.requestedSchedule?.sunday | formatDaySchedule }}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.monday?.length">
+											{{request?.requestedSchedule?.monday | formatDaySchedule }}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.tuesday?.length">
+											{{request?.requestedSchedule?.tuesday | formatDaySchedule }}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.wednesday?.length">
+											{{request?.requestedSchedule?.wednesday | formatDaySchedule }}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.thursday?.length">
+											{{request?.requestedSchedule?.thursday | formatDaySchedule }}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.friday?.length">
+											{{request?.requestedSchedule?.friday | formatDaySchedule }}
+										</td>
+										<td *ngIf="request?.requestedSchedule?.saturday?.length">
+											{{request?.requestedSchedule?.saturday | formatDaySchedule }}
+										</td>
+									</tr>
+								</table>								
+							</div>
+						</div>
+					</div>
+				</form>
+			</ng-container>
+			<!-- STUDENT LIST FROM REQUEST ON LAUNCH PAGE -->
+
+			<!-- STUDENT LIST FROM STUDENTS ON OPERATION PAGE -->
+			<ng-container *ngIf="objectData?.students && parentComponent=='operations'">
+				<form [formGroup]="tnFormRequest" novalidate (ngSubmit)="save(tnFormRequest.value, tnFormRequest.valid, 'tnFormRequest')">
+					<div formArrayName="students">
+						<div class="request-bar no-padding col-md-12 col-sm-12 col-xs-12" *ngFor="let request of objectData?.students; index as i">
+							<div class="col-md-5 col-sm-12 col-xs-12 left-box-container" [formGroupName]="i">
+								<table width="100%">
+									<tr>
+										<td>
+											<table width="100%" class="student-column">
+												<tr>
+													<td class="checkbox-column">
+														<ng-container *ngIf="userViewMode == 'PARENT' && parentCanDrop(request) && isEditable">
+										                    <div class="check-box blue">
+											                    <label class="gray_blue_checkox">
+											                        <input formControlName="isSelected" type="checkbox">
+											                        <span class="chekboximg"></span>
+											                    </label>
+											                </div>
+														</ng-container>
+														<ng-container *ngIf="userViewMode == 'TM' && isEditable">
+										                    <div class="check-box blue">
+											                    <label class="gray_blue_checkox">
+											                        <input formControlName="isSelected" type="checkbox">
+											                        <span class="chekboximg"></span>
+											                    </label>
+											                </div>
+														</ng-container>
+													</td>
+													<td class="image-column">
+														<div class="userimage img-container">
+															<img class="img-responsive" [src]="commonService.getProfileImage(request?.parent?.profileImage,request?.parent?._id)" (error)="commonService.setDefaultProfileImage($event)">
+														</div>
+													</td>
+													<td class="userdetail" >
+														<div class="name" *ngIf="request?.currentStatus=='INVITED'">
+															<ng-container *ngIf="request?.parentemail">
+																{{ request?.parentemail }}
+															</ng-container>
+															<ng-container *ngIf="!request?.parentemail">
+																{{ request?.parent?.name?.full | name:request?.parent?.fname: request?.parent?.lname }}
+															</ng-container>
+														</div>
+														<div class="name" *ngIf="request?.currentStatus!='INVITED'">
+															{{ request?.parent?.name?.full | name:request?.parent?.fname: request?.parent?.lname }}
+														</div>
+
+														<span class="blue"><i class="fa fa-map-marker"></i></span> 
+														<span>{{'distance' | geoDistance: request?.parent?.location?.coordinates[1]: request?.parent?.location?.coordinates[0]: objectData?.location?.coordinates[1]: objectData?.location?.coordinates[0]}} {{'away' | translate}}</span>
+													</td>
+													<td class="align-center payment-column">
+														<img *ngIf="request?.parent?.paymentSetupVerified && userViewMode == 'TM'" class="img-responsive payment-icon padding-bottom-5" src="assets/images/approved-payment-talentnook.png" title="{{'ttl_payment_verified' | translate}}">
+														<img *ngIf="!request?.parent?.paymentSetupVerified && userViewMode == 'TM'" class="img-responsive payment-icon padding-bottom-5" src="assets/images/not-approved-payment-talentnook.png" alt="not-approved-payment-talentnook" title="{{'ttl_payment_not_verified' | translate}}">
+														<img *ngIf="request?.parentWillingToHost" class="img-responsive willingtohost-icon padding-bottom-5" src="assets/images/willing-to-host-talentnook.png" alt="willing-to-host-talentnook" title="{{'ttl_willing_to_host' | translate}}">
+
+														<!-- IF USER INVITED AS GF -->
+														<img *ngIf="request?.currentStatus=='INVITED' && request?.isGrandfatheringInvite && userViewMode == 'TM'" class="img-responsive gf_icon padding-bottom-5" src="assets/images/gf-blue-talentnook.png" alt="gf-blue-talentnook" title="{{'transferred_to_talentnook' | translate}}">
+														<!-- IF USER INVITED AS GF AND PARENT ACCEPTED GF OPTION FOR HIM/HER -->
+														<img *ngIf="request?.currentStatus!='INVITED' && request?.isGrandfathering && userViewMode == 'TM'" class="img-responsive gf_icon padding-bottom-5" src="assets/images/gf-blue-talentnook.png" alt="gf-blue-talentnook" title="{{'transferred_to_talentnook' | translate}}">
+													</td>
+													<td class="portrait-hide-cell status-column">
+														<button class="default-btn {{ request?.currentStatus }}_btn">{{ request?.currentStatus }}</button>
+													</td>
+												</tr>
+												<tr class="portrait-show-row">
+													<td colspan="5">
+														<button class="default-btn {{ request?.currentStatus }}_btn">{{ request?.currentStatus }}</button>
+													</td>
+												</tr>
+											</table>
+										</td>
+									</tr>
+								</table>
+							</div>
+							<div class="col-md-7 col-sm-12 col-xs-12 right-box-container">
+								<table width="100%">
+									<tr class="student-heading">
+										<td width="40%">
+											{{'student' | translate}}
+										</td>
+										<td>
+											{{'gender' | translate}}
+										</td>
+										<!-- AS PER THE SUMIT FEEDBACK WE NEED TO REMOVE THIS AGE COLUMN -->
+										<!-- <td class="userdetail">
+											{{'age' | translate}}
+										</td> -->
+										<td>
+											{{'grade' | translate}}
+										</td>
+									</tr>
+									<tr class="student-info">
+										<td>
+											{{ request?.student?.name?.full | name:request?.student?.fname: request?.student?.lname }}
+										</td>
+										<td>
+											{{ request?.student?.gender }}
+										</td>
+										<!-- AS PER THE SUMIT FEEDBACK WE NEED TO REMOVE THIS AGE COLUMN -->
+										<!-- <td class="userdetail">
+											<span *ngIf="request?.student?.age">
+												{{ request?.student?.age }} {{'years' | translate}}
+											</span>
+											<span *ngIf="!request?.student?.age">--</span>
+										</td> -->
+										<td>
+											{{ request?.student?.grade | grade}}
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</form>
+			</ng-container>
+			<!-- STUDENT LIST FROM STUDENTS ON OPERATION PAGE -->
+		</div>
+	</div>
+</div>
+
+<app-inlinepopup *ngIf="inlinePopupEnabled" [relativeTo]="'#requestlist-container'" [event]="triggeringPoint" (onHide)="onHide($event)" [position]="inlinePopupPosition">
+	<!-- [parentRequests]="'[]'" [hasParentRequest]="'false'"  -->
+	<div class="edit-schedule-container" [ngClass]="{'show':inlineViewMode=='edit-schedule', 'hide':inlineViewMode!='edit-schedule'}">
+		<app-schedule *ngIf="enableScheduleEditing" #scheduleEditCom (save)="returnEditScheduleData($event)" [data]="dataToEditSchedule" [isEditable]="'true'" [scheduleEdit]="'true'" [isSingleForm]="isSingleForm" [parentComponent]="'launch-scheduleEdit'" (returnScheduleData)="returnEditScheduleData($event)"></app-schedule>
+	</div>
+
+	<div class="pick-schedule-container" [ngClass]="{'show':inlineViewMode=='pick-schedule', 'hide':inlineViewMode!='pick-schedule'}">
+		<app-schedule *ngIf="pickScheduleEnabled" #scheduleCom (save)="saveScheduleDetail($event)" [data]="scheduleData" [isEditable]="isEditable" [isSingleForm]="'true'" [scheduleEdit]="scheduleEdit" [parentComponent]="'launch'" [parentRequests]="parentRequests" [hasParentRequest]="hasParentRequest" (returnScheduleData)="returnedScheduleData($event)"></app-schedule>
+	</div>
+
+	<div [ngClass]="{'hide': !dropInlinePopupEnabled, 'show': dropInlinePopupEnabled && inlineViewMode=='drop-confirm'}">
+		<div class="drop-request-container">
+			<ng-container *ngIf="userViewMode=='PARENT'">
+				<div class="drop-popup-name">{{'Hi' | translate}} {{userContainer?.user?.fname}},</div>
+				<div class="drop-popup-content">
+					{{'drop_message_1' | translate}}
+				</div>
+				<div class="drop-popup-subcontent">
+					{{'drop_message_2' | translate}}
+				</div>
+				<div class="drop-popup-contact">
+					<div class="col-md-8 col-sm-7 col-xs-7 no-padding">
+						<button class="btn btn-primary" (click)="commonService.contactTm(4,userContainer?.tmuser)">{{'contact' | translate}} {{userContainer?.tmuser?.fname}}</button>
+					</div>
+					<div class="col-md-4 col-sm-5 col-xs-5 align-right no-padding">
+						<a class="btn btn-primary" (click)="dropConfirm(true)" href="javascript:void(0);">{{'drop' | translate}}</a>
+						<a class="btn btn-default" (click)="dropConfirm(false)" href="javascript:void(0);">{{'cancel' | translate}}</a>
+					</div>
+				</div>
+			</ng-container>
+
+			<ng-container *ngIf="userViewMode=='TM'">
+				<div class="drop-popup-contact">
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding" style="padding: 6px 0px;">
+						{{deleteConfirmMessage}}
+					</div>
+				</div>
+				<div class="drop-popup-contact">
+					<div class="col-md-7 col-sm-6 col-xs-6 no-padding" style="padding: 6px 0px;">
+					</div>
+					<div class="col-md-5 col-sm-6 col-xs-6 align-right no-padding">
+						<a class="btn btn-primary" (click)="dropConfirm(true)" href="javascript:void(0);">{{'drop' | translate}}</a>
+						<a class="btn btn-default" (click)="dropConfirm(false)" href="javascript:void(0);">{{'cancel' | translate}}</a>
+					</div>
+				</div>
+			</ng-container>
+			<!-- <div class="drop-popup-action align-right"></div> -->
+		</div>
+	</div>
+</app-inlinepopup>
+
+<!-- FOR CONFIRMATION OF DELETE -->
+<!-- <app-confirmbox (confirmOutput)="confirmOutput($event)" [title]="confirmTitle" [content]="confirmContent" [showConfirm]="showConfirm" [noButton]="noButton" [yesButton]="yesButton"></app-confirmbox> -->

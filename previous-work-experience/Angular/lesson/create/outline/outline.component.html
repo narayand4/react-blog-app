@@ -1,0 +1,186 @@
+<ng-container *ngIf=" parentComponent!='stepProfile' && parentComponent!='createLesson' && parentComponent!='editLesson'">
+  <h4 class="tmheading-black">
+  	{{'lesson_outline' | translate }}
+  	<div class="add-edit"><i *ngIf="isEditable && !isSingleForm" class="fa fa-pencil-square-o add-editicon gray" (click)="lessonOutlineEdit=(lessonOutlineEdit)? false: true;"></i></div>
+  </h4>
+  <p class="text-container" [ngClass]="{'hide': lessonOutlineEdit, 'clearboth': true}" *ngIf="objectData?.sessionOutline" [innerHtml]="objectData?.sessionOutline | safeHtml"></p>
+
+  <ng-container *ngIf="parentComponent=='tncreate'">
+    <p class="text-container" [ngClass]="{'hide': lessonOutlineEdit, 'clearboth': true, 'align-center': true}"  *ngIf="!objectData?.sessionOutline">{{'lbl_sessionoutline' | translate}}</p>
+  </ng-container>
+
+  <ng-container *ngIf="parentComponent!='tncreate'">
+    <p class="text-container" [ngClass]="{'hide': lessonOutlineEdit, 'clearboth': true, 'align-center': true}"  *ngIf="!objectData?.sessionOutline && isParentOfTalentnook()">{{lbl_lessonoutline_for_parent}}</p>
+    <p [ngClass]="{'hide': lessonOutlineEdit, 'clearboth': true, 'align-center': true}"  *ngIf="!objectData?.sessionOutline  && !isParentOfTalentnook()">{{'lbl_sessionoutline' | translate}}</p>
+  </ng-container>
+
+  <div class="policy-content clearboth editor-container" style="display: none;" [ngClass]="{'show': lessonOutlineEdit}">
+    <!-- <form [formGroup]="tmFormLessonOutline" novalidate (ngSubmit)="save(tmFormLessonOutline.value, tmFormLessonOutline.valid, 'tmFormLessonOutline')"> -->
+      <div [ngClass]="{'has-error':!tmFormLessonOutline.controls.sessionOutline.valid && !tmFormLessonOutline.controls.sessionOutline.untouched}">
+        <!-- <textarea name="sessionOutline" class="form-control" formControlName="sessionOutline"></textarea> -->
+        
+        <p-editor [(ngModel)]="lessonOutlineDescription"  [style]="{'min-height':'120px'}">
+          <p-header>
+              <span class="ql-formats">
+                  <select class="ql-header">
+                    <option value="1">Heading</option>
+                    <option value="2">Subheading</option>
+                    <option selected>Normal</option>
+                  </select>
+              </span>
+              <span class="ql-formats">
+                  <button class="ql-bold" aria-label="Bold"></button>
+                  <button class="ql-italic" aria-label="Italic"></button>
+                  <button class="ql-underline" aria-label="Underline"></button>
+              </span>
+              <span class="ql-formats">
+                  <select class="ql-color"></select>
+                  <select class="ql-background"></select>
+              </span>
+              <span class="ql-formats">
+                  <button class="ql-list" value="ordered" aria-label="Ordered List"></button>
+                  <button class="ql-list" value="bullet" aria-label="Unordered List"></button>
+                  <select class="ql-align">
+                      <option selected></option>
+                      <option value="center"></option>
+                      <option value="right"></option>
+                      <option value="justify"></option>
+                  </select>
+              </span>
+              <span class="ql-formats">
+                  <button class="ql-link" aria-label="Insert Link"></button>
+              </span>
+              <span class="ql-formats">
+                  <button class="ql-clean" aria-label="Remove Styles"></button>
+              </span>
+          </p-header>
+        </p-editor>
+        <p class="form-err-msg" [hidden]="lessonOutlineDescriptionError">{{'err_valid_lessonOutline' | translate}}</p>
+      </div>
+
+      <div class="tm-form-select-submitbuttons" *ngIf="!isSingleForm">
+        <button type="button" class="btn btn-primary" (click)="saveEditorValue()">{{'save' | translate}}</button> &nbsp; 
+        <!-- <button type="button" (click)="lessonOutlineEdit=false" class="btn default-button blue cancel">{{'cancel' | translate}}</button> -->
+        <a (click)="lessonOutlineEdit=false" class="btn pull-right btn-default" href="javascript:void(0);">{{'cancel' | translate}}</a>
+      </div>
+
+    <!-- </form> -->
+  </div>
+</ng-container>
+
+<ng-container *ngIf=" parentComponent=='stepProfile' || parentComponent=='createLesson' ">
+  <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+    <div class="policy-content clearboth editor-container" style="display: none;" [ngClass]="{'show': lessonOutlineEdit}">
+      <!-- <form [formGroup]="tmFormLessonOutline" novalidate (ngSubmit)="save(tmFormLessonOutline.value, tmFormLessonOutline.valid, 'tmFormLessonOutline')"> -->
+        <div [ngClass]="{'has-error':!tmFormLessonOutline.controls.sessionOutline.valid && !tmFormLessonOutline.controls.sessionOutline.untouched}">
+          <!-- <textarea name="sessionOutline" class="form-control" formControlName="sessionOutline"></textarea> -->
+          
+          <p-editor [(ngModel)]="lessonOutlineDescription"  [style]="{'min-height':'120px'}">
+            <p-header>
+                <!-- <span class="ql-formats">
+                    <select class="ql-header">
+                      <option value="1">Heading</option>
+                      <option value="2">Subheading</option>
+                      <option selected>Normal</option>
+                    </select>
+                </span> -->
+                <span class="ql-formats">
+                    <button class="ql-bold" aria-label="Bold"></button>
+                    <button class="ql-italic" aria-label="Italic"></button>
+                    <button class="ql-underline" aria-label="Underline"></button>
+                </span>
+               <!--  <span class="ql-formats">
+                    <select class="ql-color"></select>
+                    <select class="ql-background"></select>
+                </span> -->
+                <span class="ql-formats">
+                    <button class="ql-list" value="ordered" aria-label="Ordered List"></button>
+                    <button class="ql-list" value="bullet" aria-label="Unordered List"></button>
+                    <select class="ql-align">
+                        <option selected></option>
+                        <option value="center"></option>
+                        <option value="right"></option>
+                        <option value="justify"></option>
+                    </select>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-link" aria-label="Insert Link"></button>
+                </span>
+                <!-- <span class="ql-formats">
+                    <button class="ql-clean" aria-label="Remove Styles"></button>
+                </span> -->
+            </p-header>
+          </p-editor>
+          <p class="form-err-msg" [hidden]="lessonOutlineDescriptionError">{{'err_valid_lessonOutline' | translate}}</p>
+        </div>
+      <!-- </form> -->
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="parentComponent=='editLesson'">
+  <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+    <div class="heading-text">{{'lesson_outline' | translate }}</div>
+    <div class="heading-edit">
+      <img *ngIf="isEditable" class="img-responsive" src="assets/images/lessons/edit.png" (click)="lessonOutlineEdit=(lessonOutlineEdit)? false: true;">
+      <!-- <i *ngIf="isEditable && !isSingleForm" class="fa fa-pencil-square-o add-editicon gray" (click)="lessonOutlineEdit=(lessonOutlineEdit)? false: true;"></i> -->
+    </div>
+  </div>
+
+  <div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15 text-data">
+    <p class="text-container" [ngClass]="{'hide': lessonOutlineEdit, 'clearboth': true}" *ngIf="objectData?.sessionOutline" [innerHtml]="objectData?.sessionOutline | safeHtml"></p>
+
+    <p [ngClass]="{'hide': lessonOutlineEdit, 'clearboth': true, 'align-center': true}"  *ngIf="!objectData?.sessionOutline">{{'lbl_sessionoutline' | translate}}</p>
+  </div>
+
+  <div class="col-md-12 col-sm-12 col-xs-12 no-padding policy-content clearboth editor-container" style="display: none;" [ngClass]="{'show': lessonOutlineEdit}">
+    <!-- <form [formGroup]="tmFormLessonOutline" novalidate (ngSubmit)="save(tmFormLessonOutline.value, tmFormLessonOutline.valid, 'tmFormLessonOutline')"> -->
+      <div [ngClass]="{'has-error':!tmFormLessonOutline.controls.sessionOutline.valid && !tmFormLessonOutline.controls.sessionOutline.untouched}">
+        <!-- <textarea name="sessionOutline" class="form-control" formControlName="sessionOutline"></textarea> -->
+        
+        <p-editor [(ngModel)]="lessonOutlineDescription"  [style]="{'min-height':'200px'}">
+          <p-header>
+              <!-- <span class="ql-formats">
+                  <select class="ql-header">
+                    <option value="1">Heading</option>
+                    <option value="2">Subheading</option>
+                    <option selected>Normal</option>
+                  </select>
+              </span> -->
+              <span class="ql-formats">
+                  <button class="ql-bold" aria-label="Bold"></button>
+                  <button class="ql-italic" aria-label="Italic"></button>
+                  <button class="ql-underline" aria-label="Underline"></button>
+              </span>
+             <!--  <span class="ql-formats">
+                  <select class="ql-color"></select>
+                  <select class="ql-background"></select>
+              </span> -->
+              <span class="ql-formats">
+                  <button class="ql-list" value="ordered" aria-label="Ordered List"></button>
+                  <button class="ql-list" value="bullet" aria-label="Unordered List"></button>
+                  <select class="ql-align">
+                      <option selected></option>
+                      <option value="center"></option>
+                      <option value="right"></option>
+                      <option value="justify"></option>
+                  </select>
+              </span>
+              <span class="ql-formats">
+                  <button class="ql-link" aria-label="Insert Link"></button>
+              </span>
+              <!-- <span class="ql-formats">
+                  <button class="ql-clean" aria-label="Remove Styles"></button>
+              </span> -->
+          </p-header>
+        </p-editor>
+        <p class="form-err-msg" [hidden]="lessonOutlineDescriptionError">{{'err_valid_lessonOutline' | translate}}</p>
+      </div>
+
+      <div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15 bottom-cta-bar" *ngIf="!isSingleForm">
+        <button type="button" class="btn btn-primary smallwidth margin-right-10" (click)="saveEditorValue()">{{'save' | translate}}</button>
+        <button type="button" class="btn btn-default smallwidth" (click)="lessonOutlineEdit=false">{{'cancel' | translate}}</button>
+      </div>
+    <!-- </form> -->
+  </div>
+</ng-container>

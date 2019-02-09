@@ -1,0 +1,1025 @@
+<div class="container-flud mylesson-outer-container">
+	<div class="container mylesson-container font-gray2">
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<!-- TEACHER VIEW -->
+				<ng-container *ngIf="rightpanelViewmode=='TM'">
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+						<h2 class="heading2-2">{{'my_lesson_capital' | translate}}</h2>
+					</div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding menu-bar-container">
+						<div class="col-md-7 col-sm-7 col-xs-12 hidden-xs no-padding">
+							<div class="menu-list firstitem" [ngClass]="{'active': tabsStatus.newrequest}" (click)="changeTab('newrequest')">{{'new_request' | translate}}</div>
+							<div class="menu-list" [ngClass]="{'active': tabsStatus.ongoing}" (click)="changeTab('ongoing')">{{'ongoing' | translate}}</div>
+							<div class="menu-list" [ngClass]="{'active': tabsStatus.published}" (click)="changeTab('published')">{{'published' | translate}}</div>
+							<div class="menu-list" [ngClass]="{'active': tabsStatus.completed}" (click)="changeTab('completed')">{{'completed' | translate}}</div>
+							<div class="menu-list" [ngClass]="{'active': tabsStatus.inactive}" (click)="changeTab('inactive')">{{'inactive' | translate}}</div>
+							<div class="menu-list" [ngClass]="{'active': tabsStatus.draft}" (click)="changeTab('draft')">{{'draft' | translate}}</div>
+						</div>
+						<div class="col-md-5 col-sm-5 col-xs-12 no-padding search-panel">
+							<input class="form-control" autocomplete="off" placeholder="{{'search_for_your_lessons' | translate}}">
+							<button class="btn btn-blue-border" routerLink="/createlesson">{{'create_new_lesson' | translate}}</button>
+						</div>
+						<div class="hidden-lg hidden-md hidden-sm col-xs-12 no-padding mobile-tab">
+							<select class="select-dropdown" (click)="changeTab('newrequest', $event)">
+								<option value="{{'new_request' | translate}}">{{'new_request' | translate}}</option>
+								<option value="{{'ongoing' | translate}}">{{'ongoing' | translate}}</option>
+								<option value="{{'published' | translate}}">{{'published' | translate}}</option>
+								<option value="{{'completed' | translate}}">{{'completed' | translate}}</option>
+								<option value="{{'inactive' | translate}}">{{'inactive' | translate}}</option>
+								<option value="{{'draft' | translate}}">{{'draft' | translate}}</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+						<!-- NEW REQUEST -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.newrequest, 'hide': !tabsStatus.newrequest}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.newrequest">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.newrequest=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'newrequest_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['newrequest']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_new_request' | translate}}</h2>
+								</div>
+							</div>
+							<!-- newrequest -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['newrequest']?.length">
+								<div class="col-md-9 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box detailed-box" *ngFor="let lesson of gridData['newrequest']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'newrequest')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<div class="small-content saparator">|</div>
+												<div class="small-heading">{{'available_slot' | translate}}</div>
+												<div class="small-content">{{lesson?.availableSlot}}</div>
+
+												<!-- <div class="small-content saparator">|</div>
+												<div class="small-heading">{{'requested_by' | translate}}</div>
+												<div class="small-content">{{lesson?.availableSlot}}</div> -->
+											</div>
+										</div>
+										
+										<div class="card-right-panel">											
+											<div class="card-right-panel-data">
+												<table width="100%">
+													<tr>
+														<td class="left-content">
+															<div class="address elipsistext">
+																<img class="img-responsive" src="assets/images/lessons/lesson_location.png">	
+																{{ {address: lesson?.address, unitno: lesson?.unitno} | address:'short' }}
+															</div>
+															<div class="enroll">
+																<div class="small-heading">{{'students' | translate}}</div>
+																<div class="medium-content">{{ lesson?.total.students }}</div>
+															</div>
+															<div class="waitlisted">
+																<div class="small-heading">{{'host' | translate}}</div>
+																<div class="medium-content">
+																	<div class="blue" *ngIf="lesson?.hostId"><img class="img-responsive" src="assets/images/stepprofile/completed-step.png"></div>
+																	<div class="blue" *ngIf="!lesson?.hostId"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+																</div>
+															</div>
+														</td>
+														<td class="right-icon">
+															<div><img class="img-responsive" src="assets/images/lessons/lesson_message.png"></div>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-3 col-sm-12 col-xs-12 hidden-sm hidden-xs">
+									<div class="tips_and_tricks small-trickbox">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- ONGOING -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.ongoing, 'hide': !tabsStatus.ongoing}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.ongoing">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.ongoing=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'ongoing_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['ongoing']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_ongoing_lessons' | translate}}</h2>
+								</div>
+							</div>
+							<!-- ongoing -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['ongoing']?.length">
+								<div class="col-md-9 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box detailed-box" *ngFor="let lesson of gridData['ongoing']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'ongoing')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<div class="small-content saparator">|</div>
+												<div class="small-heading">{{'started_on' | translate}}</div>
+												<div class="small-content">
+													<!-- {{lesson?.startDate | date: env.DATE_FORMAT}} -->
+													<ng-container *ngIf="!lesson?.startDate">
+														{{ 'not_yet_started' | translate }}
+													</ng-container>
+							                        <ng-container *ngIf="commonService.isFutureLesson(lesson?.startDate)">
+							                            {{lesson?.startDate | date: env.DATE_FORMAT}}
+							                        </ng-container>
+												</div>
+											</div>
+										</div>
+										<div class="card-right-panel">
+											<div class="card-right-panel-data">
+												<table width="100%">
+													<tr>
+														<td class="left-content">
+															<div class="address elipsistext">
+																<img class="img-responsive" src="assets/images/lessons/lesson_location.png">	
+																{{ {address: lesson?.address, unitno: lesson?.unitno} | address:'short' }}
+															</div>
+															<div class="enroll">
+																<div class="small-heading">{{'enrolled' | translate}}</div>
+																<div class="medium-content">{{ lesson?.total.accepted }}</div>
+															</div>
+															<div class="waitlisted">
+																<div class="small-heading">{{'waitlisted' | translate}}</div>
+																<div class="medium-content">{{ lesson?.total.waitlisted }}</div>
+															</div>
+														</td>
+														<td class="right-icon">
+															<div><img class="img-responsive" src="assets/images/lessons/lesson_message.png"></div>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-3 col-sm-12 col-xs-12 hidden-sm hidden-xs">
+									<div class="tips_and_tricks small-trickbox">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- PUBLISHED -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.published, 'hide': !tabsStatus.published}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.published">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.published=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'published_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['published']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_published_lessons' | translate}}</h2>
+								</div>
+							</div>
+							<!-- published -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['published']?.length">
+								<div class="col-md-7 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box small-box" *ngFor="let lesson of gridData['published']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'published')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<!-- <div class="lesson-schedule">{{'schedule' | translate}}<span>{{commonService.getAvailability(lesson?.schedule)}}</span></div> -->
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<!-- <div class="small-content saparator">|</div>
+												<div class="small-heading">{{'started_on' | translate}}</div>
+												<div class="small-content">{{lesson?.startDate | date: env.DATE_FORMAT}}</div> -->
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-5 col-sm-12 col-xs-12 no-padding hidden-sm hidden-xs">
+									<div class="tips_and_tricks large-size">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- COMPLETED -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.completed, 'hide': !tabsStatus.completed}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.completed">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.completed=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'completed_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['completed']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_completed_lessons' | translate}}</h2>
+								</div>
+							</div>
+							<!-- completed -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['completed']?.length">
+								<div class="col-md-7 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box small-box" *ngFor="let lesson of gridData['completed']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'completed')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<!-- <div class="lesson-schedule">{{'schedule' | translate}}<span>{{commonService.getAvailability(lesson?.schedule)}}</span></div> -->
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<!-- <div class="small-content saparator">|</div>
+												<div class="small-heading">{{'started_on' | translate}}</div>
+												<div class="small-content">{{lesson?.startDate | date: env.DATE_FORMAT}}</div> -->
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-5 col-sm-12 col-xs-12 no-padding hidden-sm hidden-xs">
+									<div class="tips_and_tricks large-size">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- INACTIVE -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.inactive, 'hide': !tabsStatus.inactive}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.inactive">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.inactive=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'inactive_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['inactive']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_inactive_lessons' | translate}}</h2>
+								</div>
+							</div>
+							<!-- inactive -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['inactive']?.length">
+								<div class="col-md-7 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box small-box" *ngFor="let lesson of gridData['inactive']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'inactive')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<!-- <div class="lesson-schedule">{{'schedule' | translate}}<span>{{commonService.getAvailability(lesson?.schedule)}}</span></div> -->
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<!-- <div class="small-content saparator">|</div>
+												<div class="small-heading">{{'started_on' | translate}}</div>
+												<div class="small-content">{{lesson?.startDate | date: env.DATE_FORMAT}}</div> -->
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-5 col-sm-12 col-xs-12 no-padding hidden-sm hidden-xs">
+									<div class="tips_and_tricks large-size">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- DRAFT -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.draft, 'hide': !tabsStatus.draft}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.draft">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.draft=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'draft_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['draft']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_draft_lessons' | translate}}</h2>
+								</div>
+							</div>
+							<!-- draft -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['draft']?.length">
+								<div class="col-md-9 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box" *ngFor="let lesson of gridData['draft']" (mouseenter)="updateVCardData(lesson)">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'draft')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext"><p class="outline-content" [innerHtml]="lesson?.sessionOutline | safeHtml"></p></div>
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<!-- <div class="small-content saparator">|</div>
+												<div class="small-heading">{{'started_on' | translate}}</div>
+												<div class="small-content">{{lesson?.startDate | date: env.DATE_FORMAT}}</div> -->
+											</div>
+											<div class="mobile-rate elipsistext">
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+										</div>
+										<div class="card-right-panel">
+											<div class="card-right-panel-content">
+												<button class="btn btn-blue-border" routerLink="/editlesson/{{lesson?._id}}" [disabled]="!user?.tm?.isPublished">{{'view_and_publish' | translate}}</button>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-3 col-sm-12 col-xs-12 no-padding hidden-sm hidden-xs">
+									<!-- sideVCardData -->
+									<div class="horizontal-card" *ngIf="sideVCardData && sideVCardData._id">
+										<div class="pointing-arrow">
+											<img class="img-responsive" src="assets/images/lessons/appear_arrow.png">
+										</div>
+										<div class="clearboth"></div>
+										<div class="v-lesson-box">
+			                                <div class="title blue-font" [style.background-image]="commonService.getTalentCategoryBGImage(sideVCardData, 'lesson')">
+			                                	<div class="freetrial" *ngIf="sideVCardData?.isFreeTrial=='Yes'">
+						                        	<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+						                        </div>
+						                        <div class="affiliation-container" *ngIf="sideVCardData?.tmId?.tm?.affiliation">
+						                        	<div class="logo-image" *ngIf="sideVCardData?.tmId?.tm?.affiliation_logo">
+						                        		<img class="img-responsive" [src]="commonService.getAffiliationImage(sideVCardData?.tmId?.tm?.affiliation_logo, sideVCardData?.tmId?._id, false)" (error)="commonService.setDefaultAffiliationImage($event,true)" (click)="showTooltip($event, 'step-member-profile-img')" >
+						                        	</div>
+						                        	<div class="affiliation-content">{{sideVCardData?.tmId?.tm?.affiliation}}</div>
+						                        </div>
+			                                </div>
+			                                <div class="content">
+			                                	<div  class="title-name">{{sideVCardData?.name}}</div>
+			                                    <div  class="content-title ">Schedule</div> 
+			                                    <div  class="content-text">
+			                                        {{commonService.getAvailability(sideVCardData?.schedule)}}
+			                                    </div>
+			                                    <div  class="content-title ">Best suited for</div>
+			                                    <div  class="content-text occupy-height">
+			                                        <span class="grade-age">Grade</span>
+			                                        <span class="grade-age-val" *ngIf="!sideVCardData?.grade"> - NA</span>
+			                                        <span class="grade-age-val" *ngIf="sideVCardData?.grade"> - {{sideVCardData?.grade}}</span> | 
+
+			                                        <span class="grade-age">Class</span> 
+			                                        <span class="grade-age-val" *ngIf="!sideVCardData?.age"> - NA</span>
+			                                        <span class="grade-age-val" *ngIf="sideVCardData?.age"> - {{sideVCardData?.age}}</span>
+			                                    </div>
+			                                    <div class="user-container ">
+						                        	<div class="left-div ">
+						                                <div class="user-img img-container">
+						                                    <img class="img-responsive" [src]="commonService.getProfileImage(sideVCardData?.tmId?.profileImage,sideVCardData?.tmId?._id)" (error)="commonService.setDefaultProfileImage($event)">
+						                                </div>
+						                            </div>
+						                            <div class="right-div">
+						                                <div class="user-name">{{ sideVCardData?.tmId?.name?.full | name:sideVCardData?.tmId?.fname: sideVCardData?.tmId?.lname }}</div>
+						                                <div class="yellow-rating-star rating" [innerHTML]="commonService.drawRating('small', lesson?.rate)"></div>
+						                            </div>
+						                        </div>
+			                                    <div class="content-price ">{{sideVCardData?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+			                                </div>
+										</div>
+										<div class="vcard-bottom-hint-text">
+											<div class="font-gray3">{{'this_is_how_your_lesson' | translate}}</div>
+											<div class="font-gray3">{{'appears_to_the_parents' | translate}}</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</ng-container>
+
+
+
+				<!-- PARENT VIEW -->
+				<ng-container *ngIf="rightpanelViewmode=='PARENT'">
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+						<h2 class="heading2-2">{{'my_lesson_capital' | translate}}</h2>
+					</div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding menu-bar-container">
+						<div class="col-md-8 col-sm-12 col-xs-12 no-padding">
+							<div class="menu-list firstitem" [ngClass]="{'active': tabsStatus.newrequest}" (click)="changeTab('newrequest')">{{'requested' | translate}}</div>
+							<div class="menu-list" [ngClass]="{'active': tabsStatus.ongoing}" (click)="changeTab('ongoing')">{{'ongoing' | translate}}</div>
+							<div class="menu-list" [ngClass]="{'active': tabsStatus.acknoledged}" (click)="changeTab('acknoledged')">{{'waiting_to_launch' | translate}}</div>
+							<div class="menu-list" [ngClass]="{'active': tabsStatus.completed}" (click)="changeTab('completed')">{{'closed_completed' | translate}}</div>
+							<div class="menu-list" [ngClass]="{'active': tabsStatus.inactive}" (click)="changeTab('inactive')">{{'inactive' | translate}}</div>
+						</div>
+						<div class="col-md-4 col-sm-12 col-xs-12 no-padding search-panel parent">
+							<input class="form-control" autocomplete="off" placeholder="{{'search_for_your_lessons' | translate}}">
+							<!-- <button class="btn btn-blue-border" routerLink="/createlesson">{{'create_new_lesson' | translate}}</button> -->
+						</div>
+					</div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+						<!-- NEW REQUEST -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.newrequest, 'hide': !tabsStatus.newrequest}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.newrequest">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.newrequest=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'newrequest_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['newrequest']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_new_request' | translate}}</h2>
+								</div>
+							</div>
+							<!-- newrequest -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['newrequest']?.length">
+								<div class="col-md-9 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box detailed-box" *ngFor="let lesson of gridData['newrequest']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'newrequest')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<div class="small-content saparator">|</div>
+												<div class="small-heading">{{'available_slot' | translate}}</div>
+												<div class="small-content">{{lesson?.availableSlot}}</div>
+
+												<!-- <div class="small-content saparator">|</div>
+												<div class="small-heading">{{'requested_by' | translate}}</div>
+												<div class="small-content">{{lesson?.availableSlot}}</div> -->
+											</div>
+										</div>
+										
+										<div class="card-right-panel">											
+											<div class="card-right-panel-data">
+												<table width="100%">
+													<tr>
+														<td class="left-content">
+															<div class="address elipsistext">
+																<img class="img-responsive" src="assets/images/lessons/lesson_location.png">	
+																{{ {address: lesson?.address, unitno: lesson?.unitno} | address:'short' }}
+															</div>
+															<div class="enroll">
+																<div class="small-heading">{{'students' | translate}}</div>
+																<div class="medium-content">{{ lesson?.total.students }}</div>
+															</div>
+															<div class="waitlisted">
+																<div class="small-heading">{{'host' | translate}}</div>
+																<div class="medium-content">
+																	<div class="blue" *ngIf="lesson?.hostId"><img class="img-responsive" src="assets/images/stepprofile/completed-step.png"></div>
+																	<div class="blue" *ngIf="!lesson?.hostId"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+																</div>
+															</div>
+														</td>
+														<td class="right-icon">
+															<div><img class="img-responsive" src="assets/images/lessons/lesson_message.png"></div>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-3 col-sm-12 col-xs-12 hidden-sm hidden-xs">
+									<div class="tips_and_tricks">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- ONGOING -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.ongoing, 'hide': !tabsStatus.ongoing}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.ongoing">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.ongoing=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'ongoing_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['ongoing']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_ongoing_lessons' | translate}}</h2>
+								</div>
+							</div>
+							<!-- ongoing -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['ongoing']?.length">
+								<div class="col-md-9 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box detailed-box" *ngFor="let lesson of gridData['ongoing']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'ongoing')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<div class="small-content saparator">|</div>
+												<div class="small-heading">{{'started_on' | translate}}</div>
+												<div class="small-content">
+													<ng-container *ngIf="!lesson?.startDate">
+														{{ 'not_yet_started' | translate }}
+													</ng-container>
+							                        <ng-container *ngIf="commonService.isFutureLesson(lesson?.startDate)">
+							                            {{lesson?.startDate | date: env.DATE_FORMAT}}
+							                        </ng-container>
+												</div>
+
+												<div class="small-content saparator">|</div>
+												<div class="small-heading">{{'payment_due' | translate}}</div>
+												<div class="small-content">
+													{{ getTalentnookwisePayment(lesson?._id) | currency:'USD':true }}
+												</div>
+											</div>
+										</div>
+										<div class="card-right-panel">											
+											<div class="card-right-panel-data">
+												<table width="100%">
+													<tr>
+														<td class="left-content">
+															<div class="address elipsistext">
+																<img class="img-responsive" src="assets/images/lessons/lesson_location.png">	
+																{{ {address: lesson?.address, unitno: lesson?.unitno} | address:'short' }}
+															</div>
+															<div class="enroll">
+																<div class="small-heading">{{'enrolled' | translate}}</div>
+																<div class="medium-content">{{ lesson?.total.accepted }}</div>
+															</div>
+															<div class="waitlisted">
+																<div class="small-heading">{{'waitlisted' | translate}}</div>
+																<div class="medium-content">{{ lesson?.total.waitlisted }}</div>
+															</div>
+														</td>
+														<td class="right-icon">
+															<div><img class="img-responsive" src="assets/images/lessons/lesson_message.png"></div>
+														</td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-3 col-sm-12 col-xs-12 hidden-sm hidden-xs">
+									<div class="tips_and_tricks">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- ACKNOLEDGED -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.acknoledged, 'hide': !tabsStatus.acknoledged}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.acknoledged">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.acknoledged=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'acknoledged_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['acknoledged']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_acknoledged_lessons' | translate}}</h2>
+								</div>
+							</div>
+							<!-- acknoledged -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['acknoledged']?.length">
+								<div class="col-md-9 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box detailed-box" *ngFor="let lesson of gridData['acknoledged']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'acknoledged')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<!-- <div class="small-content saparator">|</div>
+												<div class="small-heading">{{'started_on' | translate}}</div>
+												<div class="small-content">{{lesson?.startDate | date: env.DATE_FORMAT}}</div> -->
+											</div>
+										</div>
+										<div class="card-right-panel">											
+											<div class="card-right-panel-content">
+												<button class="btn btn-blue-border" disabled="disabled">{{'view_and_publish' | translate}}</button>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-3 col-sm-12 col-xs-12 no-padding hidden-sm hidden-xs">
+									<div class="tips_and_tricks large-size">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- COMPLETED -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.completed, 'hide': !tabsStatus.completed}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.completed">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.completed=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'completed_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['completed']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_completed_lessons' | translate}}</h2>
+								</div>
+							</div>
+							<!-- completed -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['completed']?.length">
+								<div class="col-md-7 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box small-box" *ngFor="let lesson of gridData['completed']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'completed')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<!-- <div class="lesson-schedule">{{'schedule' | translate}}<span>{{commonService.getAvailability(lesson?.schedule)}}</span></div> -->
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<!-- <div class="small-content saparator">|</div>
+												<div class="small-heading">{{'started_on' | translate}}</div>
+												<div class="small-content">{{lesson?.startDate | date: env.DATE_FORMAT}}</div> -->
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-5 col-sm-12 col-xs-12 no-padding hidden-sm hidden-xs">
+									<div class="tips_and_tricks large-size">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<!-- INACTIVE -->
+						<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'show': tabsStatus.inactive, 'hide': !tabsStatus.inactive}">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup.inactive">
+								<div class="info-box lightblue">
+									<div class="info-close" (click)="hintsPopup.inactive=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+									<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+									<div class="info-content font-gray2">{{'inactive_lessons_hint_text' | translate}}</div>
+								</div>
+							</div>
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding no-lesson-found" *ngIf="!gridData['inactive']?.length">
+								<div class="col-md-12 col-sm-12 col-xs-12 text-content">
+									<img class="img-responsive" src="assets/images/stepprofile/no_data.png">
+									<h2 class="heading1-2">{{'sorry_you_dont_have_any_inactive_lessons' | translate}}</h2>
+								</div>
+							</div>
+							<!-- inactive -->
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-15" *ngIf="gridData['inactive']?.length">
+								<div class="col-md-7 col-sm-12 col-xs-12 no-padding">
+									<div class="h-lesson-box small-box" *ngFor="let lesson of gridData['inactive']">
+										<div class="menu-option" (click)="showOptionTooltip($event, lesson, 'inactive')">
+											<img class="img-responsive" src="assets/images/lessons/lesson_more_options.png">
+										</div>
+										<div class="image-container" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')">
+											<div class="freetrial" [ngClass]="{'show': lesson?.isFreeTrial=='Yes', 'hide': lesson?.isFreeTrial!='Yes'}">
+												<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+											</div>
+										</div>
+										<div class="data-container">
+											<div class="lesson-name elipsistext">
+												<div class="name">{{lesson?.name}}</div>
+												<div class="rate">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+											</div>
+											<div class="lesson-detail font-gray2 elipsistext" [innerHtml]="lesson?.sessionOutline | safeHtml"></div>
+											<!-- <div class="lesson-schedule">{{'schedule' | translate}}<span>{{commonService.getAvailability(lesson?.schedule)}}</span></div> -->
+											<div class="lesson-schedule elipsistext">
+												<div class="small-heading">{{'schedule' | translate}}</div>
+												<div class="small-content">{{commonService.getAvailability(lesson?.schedule)}}</div>
+												
+												<!-- <div class="small-content saparator">|</div>
+												<div class="small-heading">{{'started_on' | translate}}</div>
+												<div class="small-content">{{lesson?.startDate | date: env.DATE_FORMAT}}</div> -->
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="col-md-5 col-sm-12 col-xs-12 no-padding hidden-sm hidden-xs">
+									<div class="tips_and_tricks large-size">
+								        <div class="hint-heading">
+								        	<img class="img-responsive" src="assets/images/lessons/tips_trick.png">{{'cover_your_policies_like' | translate}}
+								        </div>
+								        <div class="hint-content">
+											<ul class="hint-list">
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+												<li>Is simply dummy text of the printing and typesetting industry. Lorem Ipsum</li>
+											</ul>
+								        </div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</ng-container>
+			</div>
+		</div>
+	</div>
+</div>
+
+<app-detailpopup *ngIf="inlinePopupEnabled" [relativeTo]="'.mylesson-outer-container'" [event]="tooltipTriggeringPoint" (onHide)="onHideTooltip($event)" [position]="inlinePopupPosition">
+	<!-- NEW REQUEST LESSON OPTIONS -->
+	<div class="small-option-tooltip two-option-tooltip" *ngIf="lessonType=='newrequest'">
+		<div class="header">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('editLesson')">{{'edit_lesson' | translate}}</div>
+		</div>
+		<div class="header last">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('deleteLesson')">{{'delete_lesson' | translate}}</div>
+		</div>
+	</div>
+	<!-- ONGOING LESSON OPTIONS -->
+	<div class="small-option-tooltip two-option-tooltip" *ngIf="lessonType=='ongoing'">
+		<div class="header">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('editLesson')">{{'edit_lesson' | translate}}</div>
+		</div>
+		<div class="header last">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('deleteLesson')">{{'delete_lesson' | translate}}</div>
+		</div>
+	</div>
+	<!-- PUBLISHED LESSON OPTIONS -->
+	<div class="small-option-tooltip" *ngIf="lessonType=='published'">
+		<div class="header">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('editLesson')">{{'edit_lesson' | translate}}</div>
+		</div>
+		<div class="header">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('duplicateLesson')">{{'duplicate_lesson' | translate}}</div>
+		</div>
+		<div class="header last">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('deleteLesson')">{{'delete_lesson' | translate}}</div>
+		</div>
+	</div>
+	<!-- COMPLETED LESSON OPTIONS -->
+	<div class="small-option-tooltip two-option-tooltip" *ngIf="lessonType=='completed'">
+		<div class="header">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('duplicateLesson')">{{'duplicate_lesson' | translate}}</div>
+		</div>
+		<div class="header last">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('deleteLesson')">{{'delete_lesson' | translate}}</div>
+		</div>
+	</div>
+	<!-- INACTIVE LESSON OPTIONS -->
+	<div class="small-option-tooltip" *ngIf="lessonType=='inactive'">
+		<div class="header">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('publishLesson')">{{'active_lesson' | translate}}</div>
+		</div>
+		<div class="header">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('markAsCompleteLesson')">{{'mark_as_complete' | translate}}</div>
+		</div>
+		<div class="header last">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('deleteLesson')">{{'delete_lesson' | translate}}</div>
+		</div>
+	</div>
+
+	<!-- DRAFT LESSON OPTIONS -->
+	<div class="small-option-tooltip" *ngIf="lessonType=='draft'">
+		<div class="header">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('editLesson')">{{'edit_lesson' | translate}}</div>
+			<!-- <div class="header-close" (click)="onHideTooltip(event)">
+				<img class="img-responsive" src="assets/images/stepprofile/remove-talent.png">
+			</div> -->
+		</div>
+		<div class="header">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('duplicateLesson')">{{'duplicate_lesson' | translate}}</div>
+		</div>
+		<div class="header last">
+			<div class="header-lebel pointer" (click)="lessonOptionCta('deleteLesson')">{{'delete_lesson' | translate}}</div>
+		</div>
+	</div>
+</app-detailpopup>
+
+<app-confirmbox (confirmOutput)="confirmOutput($event)" [title]="confirmTitle" [content]="confirmContent" [showConfirm]="showConfirm" [noButton]="noButton" [yesButton]="yesButton" [showReasonBox]="showReasonBox"></app-confirmbox>

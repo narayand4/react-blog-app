@@ -1,0 +1,218 @@
+
+.bottom-fees-container {
+    padding: 0px;
+    overflow-y: hidden;
+    max-height: 1000px !important;
+}
+
+.launch-lesson-outer .pagination-div{
+    background: lavender;
+    padding-right: 0px;	
+    width: 100%;
+    float: right;
+}
+.launch-lesson-outer .grid-pagination /deep/  .ngx-pagination {
+    float: right !important;
+    margin-top: 10px !important;
+}
+
+.launch-lesson-outer .parent-list-filters.col-xs-12.col-sm-12.col-md-12.remove-margin-xs {
+    padding: 0px 0px 25px 0px !important;
+}
+
+.launch-lesson-outer .no-lesson-found {
+    background: inherit;
+    padding: 20px;
+    text-align: center;
+}
+
+.cta-bar {
+    border: 0px !important;
+    float: left;
+    padding: 12px 0px !important;
+}
+.bottom-fees-container table.desktop-grid tr {
+    border-bottom: 8px solid lavender;
+    box-shadow: 0px 0px 5px 5px #ccc;
+}
+
+.bottom-fees-container table.desktop-grid tr td {
+    font-size: 15px;
+    padding: 20px;
+    text-align: left;
+    font-weight: normal;
+    color: #333;
+    vertical-align: top;
+}
+.fontweightbold{
+    font-weight: bold;
+}
+.serial-column span.datavalue {
+    color: deepskyblue;
+}
+
+span.datavalue.status_scheduled {
+    color: limegreen;
+}
+
+span.datavalue.status_done {
+    color: dodgerblue;
+}
+span.datavalue.status_completed {
+    color: darkgreen;
+}
+span.datavalue.status_canceled {
+    color: red;
+}
+span.datavalue.status_futurelesson {
+    color: cadetblue;
+}
+
+.shownote-column a {
+    color: darkturquoise;
+    text-decoration: none;
+}
+.datavalue {
+    width: 100% !important;
+    display: inline-table;
+}
+
+.launch-lesson-outer .student-container {
+    border: 1px solid #ccc;
+    padding: 1px 5px 1px 5px;
+    font-weight: 500;
+    border-radius: 5px;
+    color: #222;
+}
+
+.bottom-fees-container table.desktop-grid tr td .column-title{
+	color: #777;
+}
+
+.lesson-grid thead th,
+.lesson-grid tbody td{
+	border: 0px;
+}
+.student-container{
+	display: inline-block;
+}
+.student-container label{
+	font-weight: normal;
+}
+.cta-bar-heading{
+	padding: 10px 0px;
+}
+
+.col-action{
+	width: 25% !important;
+}
+.inline-popup{
+	z-index: 9999;
+}
+.add_note,
+.add_note:hover,
+.add_note:active,
+.add_note:focus{
+	font-size: 13px;
+	color: #0ab1c3;
+	cursor: pointer;
+}
+.add_note i{
+	font-size: 14px;
+	padding: 0px 3px;
+}
+
+.mark_complete,
+.mark_complete:hover,
+.mark_complete:active,
+.mark_complete:focus{
+	font-size: 13px;
+	color: #299944;
+	cursor: pointer;
+}
+
+.mark_cancle,
+.mark_cancle:hover,
+.mark_cancle:active,
+.mark_cancle:focus{
+	font-size: 13px;
+	color: #F00;
+	cursor: pointer;
+}
+.mark_complete i,
+.mark_cancle i{
+	font-size: 16px;
+	padding: 0px 5px;
+}
+
+.status_completed{
+	font-size: 13px;
+	color: #299944;
+}
+.status_cancelled{
+	font-size: 13px;
+	color: #F00;
+}
+
+
+.bottom-fees-container table.lesson-grid{
+	width: 100%;
+}
+.bottom-fees-container table.lesson-grid tr th,
+.bottom-fees-container table.lesson-grid tr td{
+	width: auto;
+}
+
+.bottom-fees-container table.lesson-grid tr th.col-sno{
+	width: 5%;
+    text-align: left;
+    /*padding: 0px 20px;*/
+}
+.bottom-fees-container table.lesson-grid tr th.col-datetime{
+	width: 18%;
+    text-align: left;
+    /*padding: 0px 20px;*/
+}
+.bottom-fees-container table.lesson-grid tr th.col-students{
+	width: 38%;
+    text-align: left;
+    /*padding: 0px 20px;*/
+}
+.bottom-fees-container table.lesson-grid tr th.col-action{
+	width: 15%;
+    /*padding: 0px 20px;*/
+}
+.bottom-fees-container table.lesson-grid tr th.col-notes{
+	width: 25%;
+    text-align: left;
+    /*padding: 0px 20px;*/
+}
+
+.view-notes-container ul{
+	padding: 5px 5px 5px 20px;
+	margin: 0px;
+}
+.launch-lesson-outer.lavender-background {
+    float: left;
+    width: 100%;
+    padding: 100px 0px 10px;
+}
+.lesson-date{
+    width: 32%;
+    display: inline-block;
+}
+.ng2-datetime-picker-wrapper{
+    width: 32%;
+}
+.ng2-datetime-picker-wrapper input{
+    width: 100%;
+}
+.equal-width{
+    width: 33%;
+}
+
+@media only screen and (max-width: 375px){
+    .equal-width{
+        width: 32%;
+    }
+}

@@ -1,0 +1,444 @@
+<div class="editlesson-container-header container-fluid no-padding">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12 no-padding breadcrumb-container">
+				<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+					<app-breadcrumb [parentComponent]="'createLesson'" [breadcrumbData]="breadcrumbData"></app-breadcrumb>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="editlesson-container-page container-fluid no-padding" id="editlesson-container-page">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12 no-padding createlesson-form-container">
+				
+				<div class="no-padding left-container">
+					<div class="v-detail-lesson-box">
+	                    <div class="title blue-font" (click)="showOptionTooltip($event,'edit-picture')" [style.background-image]="commonService.getTalentCategoryBGImage(lesson, 'lesson')"> 
+	                        <div class="freetrial" *ngIf="lesson?.isFreeTrial=='Yes'">
+	                        	<img class="img-responsive" src="assets/images/stepprofile/free_trial_class.png">
+	                        </div>
+	                        <div class="affiliation-container" *ngIf="lesson?.tmId?.tm?.affiliation">
+	                        	<div class="logo-image" *ngIf="lesson?.tmId?.tm?.affiliation_logo">
+	                        		<img class="img-responsive" [src]="commonService.getAffiliationImage(lesson?.tmId?.tm?.affiliation_logo, lesson?.tmId?._id, false)" (error)="commonService.setDefaultAffiliationImage($event,true)" (click)="showTooltip($event, 'step-member-profile-img')" >
+	                        	</div>
+	                        	<div class="affiliation-content">{{lesson?.tmId?.tm?.affiliation}}</div>
+	                        </div>
+	                    </div>
+
+	                    <div class="content">
+	                    	<div class="basic-info">
+		                    	<div class="title-name elipsistext">{{lesson?.name}}</div>
+		                    	<div class="sub-title-name elipsistext">{{lesson?.fees?.hourlyRate | currency:'USD':true:'1.0'}}</div>
+		                        <div class="content-title elipsistext ">{{'created_on' | translate}} - {{lesson?.createdOn | date: env.DATE_FORMAT}}</div>
+	                        </div>
+	                        <div class="user-container ">
+	                        	<div class="left-div ">
+	                                <div class="user-img img-container">
+	                                    <img class="img-responsive" [src]="commonService.getProfileImage(lesson?.tmId?.profileImage,lesson?.tmId?._id)" (error)="commonService.setDefaultProfileImage($event)">
+	                                </div>
+	                            </div>
+	                            <div class="right-div">
+	                                <div class="user-name elipsistext">{{ lesson?.tmId?.name?.full | name:lesson?.tmId?.fname: lesson?.tmId?.lname }}</div>
+	                                <div class="yellow-rating-star rating" [innerHTML]="commonService.drawRating('small', lesson?.rate)"></div>
+	                            </div>
+	                        </div>
+	                        <div class="publish-btn" (click)="publishLesson()" *ngIf="lesson.status!='PUBLISHED'"><button class="btn btn-primary">{{'publish_lesson' | translate}}</button></div>
+	                        <div class="publish-btn" *ngIf="lesson.status=='PUBLISHED'"><button class="btn btn-primary" disabled="disabled">{{'published' | translate}}</button></div>
+	                    </div>
+	                    <div class="outer-content">
+	                        <div class="user-container ">
+	                        	<div class="left-div ">
+	                                <div class="user-img img-container">
+	                                    <img class="img-responsive" [src]="commonService.getProfileImage(lesson?.tmId?.profileImage,lesson?.tmId?._id)" (error)="commonService.setDefaultProfileImage($event)">
+	                                </div>
+	                            </div>
+	                            <div class="right-div">
+	                                <div class="user-name elipsistext">{{ lesson?.tmId?.name?.full | name:lesson?.tmId?.fname: lesson?.tmId?.lname }}</div>
+	                                <div class="yellow-rating-star rating" [innerHTML]="commonService.drawRating('small', lesson?.rate)"></div>
+	                            </div>
+	                        </div>
+	                        <div class="publish-btn" (click)="publishLesson()" *ngIf="lesson.status!='PUBLISHED'"><button class="btn btn-primary">{{'publish_lesson' | translate}}</button></div>
+	                        <div class="publish-btn" *ngIf="lesson.status=='PUBLISHED'"><button class="btn btn-primary" disabled="disabled">{{'published' | translate}}</button></div>
+	                    </div>
+					</div>
+				</div>
+
+				<div class="right-container">
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="hintsPopup">
+						<div class="info-box lightblue">
+							<div class="info-close" (click)="hintsPopup=false"><img class="img-responsive" src="assets/images/stepprofile/remove-talent.png"></div>
+							<div class="info-icon"><img class="img-responsive" src="assets/images/stepprofile/info-icon.png"></div>
+							<div class="info-content font-gray2">{{'edit_lesson_hint_text' | translate}}</div>
+						</div>
+					</div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding" [ngClass]="{'margin-top-15': hintsPopup}">
+						<form #tmFormLessonDetailForm="ngForm" [formGroup]="tmFormLessonDetail" novalidate (ngSubmit)="saveDetail(tmFormLessonDetail.value, tmFormLessonDetail.valid, 'tmFormLessonDetail')">
+							<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+
+								<div class="col-md-12 col-sm-12 col-xs-12 no-padding" id="lessonnameCom">
+									<div class="col-md-12 col-sm-12 col-xs-12 no-padding">{{'lesson_name' | translate}}</div>
+									<div class="col-md-4 col-sm-12 col-xs-12 no-padding margin-top-10" [ngClass]="{'has-error': nameError }">
+										<input type="text" name="name" (keyup)="updateOnChange($event, 'name', false, lesson.status)" id="name" class="form-control" formControlName="name" >
+										<p class="error" [hidden]="!(nameError)">{{'err_lessonname_charlimit' | translate}}</p>
+									</div>
+								</div>
+
+								<div class="col-md-6 col-sm-12 col-xs-12 no-padding margin-top-20">
+									<div class="col-md-12 col-sm-12 col-xs-12 no-padding">{{'level_taught' | translate}}</div>
+					              	<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+						              	<div class="col-md-4 col-sm-3 col-xs-4 no-padding margin-top-10 check-box blue" *ngFor="let level of taughtLevelList">
+						                	<label class="blue_checkox">
+						                  		<input type="checkbox" (change)="updateOnChange($event, 'taughtLevel', false, lesson.status)" name="options" id="level-{{level}}" (change)="updateTaughtLevel($event,level)" [checked]="hasLevelTaught(level)" value="{{level}}">
+						                  		<span class="chekboximg small"></span>
+						                  		<div class="lebel-text">{{level}}</div>
+						                	</label>
+						              	</div>
+						              	<div class="col-md-12 col-sm-3 col-xs-4 no-padding error" [hidden]="!taughtLevelSuggestion">
+						              		{{'warn_taughtchange_nameshould_be_considered' | translate}}
+						              	</div>
+					              	</div>
+					            	<p class="col-md-12 col-sm-12 col-xs-12 no-padding form-err-msg yellow" [hidden]="tmFormLessonDetail.controls.taughtLevel.valid || (!submitted)">{{'err_valid_taughtlevel' | translate}}</p>
+					            </div>
+					            <div class="col-md-6 col-sm-12 col-xs-12 no-padding margin-top-20">
+						            <div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+						            	{{'best_suited_for' | translate}}<!-- <span class="required">*</span> -->
+						            </div>
+						            <div class="col-md-6 col-sm-4 col-xs-5 no-padding padding-right-15 margin-top-10">
+						              	<div class="col-md-12 col-sm-12 col-xs-12 no-padding select-container-height">
+							              	<div class="check-box blue">
+							                	<select formControlName="grade" (change)="updateOnChange($event, 'grade', false, lesson.status)" class="select-dropdown input-max-width">
+							                		<option value="">{{'select_grade' | translate}}</option>
+							                		<option *ngFor="let grade of gradeList">{{grade}}</option>
+												</select>
+							              	</div>
+						              	</div>
+						            	<p class="col-md-12 col-sm-12 col-xs-12 no-padding form-err-msg yellow" [hidden]="tmFormLessonDetail.controls.grade.valid || (!submitted)">{{'err_valid_grade' | translate}}</p>
+						            </div>
+						            <div class="col-md-6 col-sm-4 col-xs-5 no-padding margin-top-10">
+						              	<div class="col-md-12 col-sm-12 col-xs-12 no-padding select-container-height">
+							              	<div class="no-padding check-box blue">
+							                	<select formControlName="age" (change)="updateOnChange($event, 'age', false, lesson.status)" class="select-dropdown input-max-width">
+							                		<option value="">{{'select_age' | translate}}</option>
+							                		<option *ngFor="let age of ageList">{{age}}</option>
+												</select>
+							              	</div>
+						              	</div>
+						            	<p class="col-md-12 col-sm-12 col-xs-12 no-padding form-err-msg yellow" [hidden]="tmFormLessonDetail.controls.age.valid || (!submitted)">{{'err_valid_age' | translate}}</p>
+						            </div>
+					            </div>
+
+					        </div>
+						</form>
+					</div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-20 child-component" id="lessonoutlineSection">
+						<app-outline #tmOutlineCom (save)="saveLessonOutlineDetail($event)" [data]="lesson" [isEditable]="lessonOutlineEdit" [isSingleForm]="isSingleForm" [lessonOutlineEdit]="lessonOutlineEdit" [parentComponent]="'editLesson'"></app-outline>
+
+						<!-- <p class="form-err-msg yellow" [hidden]="!tmFormLessonDetail.controls.sessionOutline.hasError('required') || (!submitted)">{{'err_invalid_outline' | translate}}</p> -->
+					</div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-20 child-component">
+						<div class="col-md-7 col-sm-12 col-xs-12 no-padding session-schedule-detail-container">
+							<div class="col-md-6 col-sm-12 col-xs-12 no-padding session-detail-container">
+								<div class="sub-section-box" id="lessondetailSection">
+									<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+									    <div class="heading-text">{{'session_detail' | translate }}</div>
+									    <div class="heading-edit">
+									      <img class="img-responsive" src="assets/images/lessons/edit.png" (click)="showOptionTooltip($event,'edit-session')">
+									    </div>
+									</div>
+									<div class="data-content session-detail">
+										<table width="100%;">
+											<tr>
+												<td class="data-content-lable"><div>{{'sessionDuration' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														<ng-container *ngIf="!lesson?.sessionDuration">--</ng-container>
+		                                                <ng-container *ngIf="lesson?.sessionDuration">{{lesson?.sessionDuration}} Minutes</ng-container>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td class="data-content-lable"><div>{{'minStudent' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														<ng-container *ngIf="!lesson?.minStudentPerSession">--</ng-container>
+		                                                <ng-container *ngIf="lesson?.minStudentPerSession">{{lesson?.minStudentPerSession}}</ng-container>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td class="data-content-lable"><div>{{'maxStudent' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														<ng-container *ngIf="!lesson?.studentPerSession">--</ng-container>
+		                                                <ng-container *ngIf="lesson?.studentPerSession">{{lesson?.studentPerSession}}</ng-container>
+													</div>
+												</td>
+											</tr>
+											<tr>
+												<td class="data-content-lable"><div>{{'isFreeTrial' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														<ng-container *ngIf="!lesson?.isFreeTrial">--</ng-container>
+		                                                <ng-container *ngIf="lesson?.isFreeTrial">{{lesson?.isFreeTrial}}</ng-container>
+													</div>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6 col-sm-12 col-xs-12 no-padding schedule-detail-container">
+								<div class="sub-section-box" id="lessonscheduleSection">
+									<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+									    <div class="heading-text">{{'schedule' | translate }}</div>
+									    <div class="heading-edit">
+									      <!-- <img class="img-responsive" src="assets/images/lessons/edit.png" (click)="editSchedule($event,'edit-schedule')"> -->
+									      <img class="img-responsive" src="assets/images/lessons/edit.png" (click)="showOptionTooltip($event,'edit-schedule')">
+									    </div>
+									</div>
+									<div class="data-content schedule-detail">
+										<table width="100%;">
+											<tr *ngIf="lesson?.schedule?.sunday?.length">
+												<td class="data-content-lable"><div>{{'sunday' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														{{lesson?.schedule?.sunday | formatDaySchedule }}
+													</div>
+												</td>
+											</tr>
+											<tr *ngIf="lesson?.schedule?.monday?.length">
+												<td class="data-content-lable"><div>{{'monday' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														{{lesson?.schedule?.monday | formatDaySchedule }}
+													</div>
+												</td>
+											</tr>
+											<tr *ngIf="lesson?.schedule?.tuesday?.length">
+												<td class="data-content-lable"><div>{{'tuesday' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														{{lesson?.schedule?.tuesday | formatDaySchedule }}
+													</div>
+												</td>
+											</tr>
+											<tr *ngIf="lesson?.schedule?.wednesday?.length">
+												<td class="data-content-lable"><div>{{'wednesday' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														{{lesson?.schedule?.wednesday | formatDaySchedule }}
+													</div>
+												</td>
+											</tr>
+											<tr *ngIf="lesson?.schedule?.thursday?.length">
+												<td class="data-content-lable"><div>{{'thursday' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														{{lesson?.schedule?.thursday | formatDaySchedule }}
+													</div>
+												</td>
+											</tr>
+											<tr *ngIf="lesson?.schedule?.friday?.length">
+												<td class="data-content-lable"><div>{{'friday' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														{{lesson?.schedule?.friday | formatDaySchedule }}
+													</div>
+												</td>
+											</tr>
+											<tr *ngIf="lesson?.schedule?.saturday?.length">
+												<td class="data-content-lable"><div>{{'saturday' | translate }}</div></td>
+												<td class="data-content-val">
+													<div>
+														{{lesson?.schedule?.saturday | formatDaySchedule }}
+													</div>
+												</td>
+											</tr>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-5 col-sm-12 col-xs-12 no-padding fees-detail-container">
+							<div class="sub-section-box" id="lessonfeesSection">
+								<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+								    <div class="heading-text">{{'fee_structure' | translate }}</div>
+								    <div class="heading-edit">
+								      <img class="img-responsive" src="assets/images/lessons/edit.png" (click)="showOptionTooltip($event,'edit-fees')">
+								    </div>
+								</div>
+								<div class="data-content fees-detail">
+									<table width="100%;">
+										<tr>
+											<td class="data-content-lable"><div>{{'rate_per_hour' | translate }}</div></td>
+											<td class="data-content-val">
+												<div>
+													<ng-container *ngIf="!lesson?.fees?.hourlyRate">$0.00</ng-container>
+	                                                <ng-container *ngIf="lesson?.fees?.hourlyRate">
+	                                                  {{lesson?.fees?.hourlyRate | currency:'USD':true:'1.2'}}
+	                                                </ng-container>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="data-content-lable"><div>{{'additional_fee_per_session' | translate }}</div></td>
+											<td class="data-content-val">
+												<div>
+													<ng-container *ngIf="!lesson?.fees?.extraFeeRate">$0.00</ng-container>
+	                                                <ng-container *ngIf="lesson?.fees?.extraFeeRate">
+	                                                  {{lesson?.fees?.extraFeeRate | currency:'USD':true:'1.2'}}
+	                                                </ng-container>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="data-content-lable"><div>{{'group_discount' | translate }}</div></td>
+											<td class="data-content-val">
+												<div>
+													<ng-container *ngIf="!lesson?.fees?.isGroupDiscount">--</ng-container>
+	                                                <ng-container *ngIf="lesson?.fees?.isGroupDiscount">
+	                                                  {{lesson?.fees?.isGroupDiscount}}
+	                                                </ng-container>   
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="data-content-lable"><div>{{'additional_fees' | translate }}</div></td>
+											<td class="data-content-val">
+												<div>
+													<ng-container *ngIf="lesson?.fees?.extraFee">{{lesson?.fees?.extraFee}}</ng-container>
+	                                              	<ng-container *ngIf="!lesson?.fees?.extraFee">
+	                                                	{{'no_reason_available' | translate}}
+	                                              	</ng-container>  
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="data-content-lable"><div>{{'reason_for_additional_fees' | translate }}</div></td>
+											<td class="data-content-val">
+												<div>
+													<ng-container *ngIf="!lesson?.fees?.extraFeeReason">--</ng-container>
+	                                                <ng-container *ngIf="lesson?.fees?.extraFeeReason">
+	                                                  {{lesson?.fees?.extraFeeReason}}
+	                                                </ng-container>
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-20 child-component">
+						<app-fees #tmFormFeesCom (save)="saveFeesDetail($event)" [data]="lesson" [isEditable]="feesEditGrid" [isSingleForm]="feesEditGrid" [feesEdit]="feesEditGrid" [gridViewMode]="gridViewMode" [parentComponent]="'editLessonGrid'"></app-fees>
+					</div>
+
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding margin-top-20 child-component">
+						<app-policy #policyCom (save)="savePolicyDetail($event)" [data]="lesson" [isEditable]="policyEdit" [isSingleForm]="isSingleForm" [policyEdit]="policyEdit" [parentComponent]="'editLesson'"></app-policy>
+						<!-- <p class="form-err-msg yellow" [hidden]="!tmFormLessonDetail.controls.sessionOutline.hasError('required') || (!submitted)">{{'err_invalid_outline' | translate}}</p> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- <app-inlinepopup *ngIf="inlinePopupEnabled" [relativeTo]="'#editlesson-container-page'" [event]="triggeringPoint" (onHide)="onHide($event)" [position]="inlinePopupPosition"> -->
+<app-detailpopup *ngIf="inlinePopupEnabled" [relativeTo]="'.editlesson-container-page'" [event]="tooltipTriggeringPoint" (onHide)="onHideTooltip($event)" [position]="inlinePopupPosition">
+	<!-- [parentRequests]="'[]'" [hasParentRequest]="'false'"  -->
+	<div class="small-option-tooltip editing-schedule-tooltip" *ngIf="enableScheduleEditing" [ngClass]="{'show':inlineViewMode=='edit-schedule', 'hide':inlineViewMode!='edit-schedule'}">	
+		<!-- *ngIf="enableScheduleEditing" -->
+		<app-schedule #scheduleEditCom (save)="returnEditScheduleData($event)" [data]="dataToEditSchedule" [isEditable]="isEditablePopup" [scheduleEdit]="scheduleEditPopup" [isSingleForm]="isSingleFormPopup" [parentComponent]="'editLesson'" (returnScheduleData)="returnEditScheduleData($event)"></app-schedule>
+	</div>
+
+	<div class="small-option-tooltip editing-session-tooltip" *ngIf="enableSessionEditing" [ngClass]="{'show':inlineViewMode=='edit-session', 'hide':inlineViewMode!='edit-session'}">
+		<!-- *ngIf="enableSessionEditing" -->
+		<app-lessondetail  #lessonDetailCom (save)="saveLessonDetail($event)" [data]="lesson" [isEditable]="isEditablePopup" [isSingleForm]="isSingleFormPopup" [lessonDetailEdit]="lessonDetailEditPopup" [parentComponent]="'editLesson'"></app-lessondetail>
+	</div>
+
+	<div class="small-option-tooltip editing-fees-tooltip" *ngIf="enableFeesEditing" [ngClass]="{'show':inlineViewMode=='edit-fees', 'hide':inlineViewMode!='edit-fees'}">
+		<!--  *ngIf="enableFeesEditing"  -->
+		<app-fees (save)="saveFeesDetail($event)" [data]="lesson" [isEditable]="isEditablePopup" [isSingleForm]="isSingleFormPopup" [feesEdit]="feesEditPopup" [gridViewMode]="gridViewMode" [parentComponent]="'editLesson'"></app-fees>
+	</div>
+
+	<div class="small-option-tooltip change-lesson-picture" *ngIf="inlineViewMode=='edit-picture'" [ngClass]="{'show':inlineViewMode=='edit-picture', 'hide':inlineViewMode!='edit-picture'}">
+		<div class="header">
+			<div class="header-lebel">{{'change_lesson_image' | translate}}</div>
+			<div class="header-close" (click)="onHideTooltip(event)">
+				<img class="img-responsive" src="assets/images/stepprofile/remove-talent.png">
+			</div>
+		</div>
+		<div class="change-pic" (click)="uploadPicture()">
+			<a href="javascript:void(0);" class="btn btn-default">
+				<img class="img-responsive" src="assets/images/stepprofile/upload_new_pic.png">
+				{{'upload_a_new_picture' | translate}}
+			</a>
+		</div>
+		<div class="info-text">
+			<div>
+				<span>{{'uploaded_image_must_meet_out' | translate}}</span> <span class="bluefont">{{'lesson_picture_quality_standards' | translate}}</span>
+			</div>
+		</div>
+		<div class="info-text-2">
+			<div>
+				<span>{{'guidelines_197x100_pixels' | translate}}</span>
+				<span>{{'jpg_or_png_no_text_on_image' | translate}}</span>
+			</div>
+		</div>		
+	</div>
+
+</app-detailpopup>
+<!-- </app-inlinepopup> -->
+
+<app-fileupload *ngIf="startUpload" [startUpload]="startUpload" (saveImage)="uploadImage($event)" (hideUpload)="hideUpload($event)" [showCircleThumb]="showCircleThumb" [settings]="imageSettings"></app-fileupload>
+
+
+<!-- Modal message alert -->
+<div class="modal fade common-modal" id="alert-pop" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel">
+  <div class="modal-dialog" role="document">
+    <!-- Modal content--> 
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="alertModalLabel">{{ "tm_launch_hi" | translate }} {{ user?.name?.full | name:user?.fname: user?.lname }},</h4>
+        <!-- <h4 class="modal-title" id="alertModalLabel">{{ "alert_tmprofile_title" | translate }}</h4> -->
+      </div>
+
+      <div class="modal-body">
+       <!--  <div class="invite-a-friend-msg">
+            {{ "tm_launch_hi" | translate }} {{ user?.name?.full | name:user?.fname: user?.lname }},
+        </div> -->
+        <div class="invite-a-friend-msg align-left">
+          {{ "alert_tmprofile_complete" | translate }} 
+        </div>
+        <!-- <div class="invite-a-friend-msg align-left" [innerHtml]="launch_tmprofile_info | safeHtml"></div> -->
+        <div class="invite-a-friend-msg align-left">
+            <ng-container *ngFor="let compo of buggyComponent; index as i">
+                <div class="clearboth">{{i+1}}.
+                    <span *ngIf="compo=='lessonnameCom'">{{'lesson_name' | translate}}</span>
+                    <span *ngIf="compo=='lessonoutlineCom'">{{'lesson_outline' | translate}}</span>
+                    <span *ngIf="compo=='lessondetailCom'">{{'session_detail' | translate}}</span>
+                    <span *ngIf="compo=='lessonscheduleCom'">{{'schedule' | translate}}</span>
+                    <span *ngIf="compo=='lessonfeesCom'">{{'fee_structure' | translate}}</span>
+                </div>
+            </ng-container>
+        </div>
+        
+        <div class="invite-a-friend-buttons align-center">
+            {{ "talentnook_thanks" | translate }} 
+            {{ "talentnook_team" | translate }} 
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- Modal message alert-->

@@ -1,0 +1,272 @@
+<div class="talent-master-outer ">
+	<app-tnheader [talentnook]="talentnook" [isJoinRequest]="isJoinRequest" [parentComponent]="'request'" [userViewMode]="'PARENT'"></app-tnheader>
+</div>
+<div class="container request-main-container">
+	<form [formGroup]="requestForm" (ngSubmit)="sendRequest(requestForm.valid)">
+		<div class="col-md-2 request-left-container">
+			<div class="interest-container col-md-12">
+				<div class="thanks-txt">{{'thanks_for_your_interested' | translate}}</div>
+				<div class="interest-img-container img-container">
+	                <img *ngIf='tmprofile && tmprofile._id' class="img-responsive" [src]="getProfileImage(tmprofile.profileImage,tmprofile._id)" (error)="onProfileImageError($event)">
+	            </div>
+				<div class="interest-thanks-title">
+					{{ tmprofile?.name?.full | name:tmprofile?.fname: tmprofile?.lname }}
+				</div>
+			</div>
+
+			<div class="thanks-divider" *ngIf="contentLoaded && (isLaunched || !isJoinRequest)"></div>
+			<div class="interest-container {{ isJoinRequest ? 'no-height' : '' }} col-md-12" *ngIf="contentLoaded && (isLaunched || !isJoinRequest)">
+				<div class="accepting-new-students" *ngIf="isLaunched">
+					<div class="accepting-container">
+						<div class="accepting-title" *ngIf="availableSlot>0">{{'accepting_new_students' | translate}}</div>
+						<div class="accepting-title" *ngIf="availableSlot<=0">{{'accepting_on_waitlist' | translate}}</div>
+						<div class="">
+							<div class="spots-left">{{'spots_left' | translate}}</div> <span class="spot-number">{{availableSlot}}</span>
+						</div>
+						<div class="max-student-txt">
+							{{'min_no_of_students' | translate}} 
+							<span class="max-number" *ngIf="talentnook?.minStudentPerSession>0">{{talentnook?.minStudentPerSession}}</span>
+							<span class="max-number" *ngIf="!(talentnook?.minStudentPerSession>0)">0</span>
+						</div>
+						<div class="max-student-txt">
+							{{'max_no_of_students' | translate}} 
+							<span class="max-number" *ngIf="talentnook?.studentPerSession>0">{{talentnook?.studentPerSession}}</span>
+							<span class="max-number" *ngIf="!(talentnook?.studentPerSession>0)">0</span>
+						</div>
+					</div>							
+				</div>
+				<div class="free-trial" *ngIf="isLaunched && talentnook?.isFreeTrial=='Yes'">{{'free_trial_class_available' | translate}}</div>
+				<!-- DON'T NEED TO SHOW THIS NOW BECAUSE WE ARE SHOWING THIS IN HEADER -->
+				<!-- <ng-container *ngIf="talentnook?.talent">
+					<div class="talent">{{'class_for' | translate}} - {{talentnook?.talent}}</div>
+				</ng-container> -->
+				<!-- DON'T NEED TO SHOW THIS NOW BECAUSE WE ARE SHOWING THIS IN HEADER -->
+
+				<ng-container *ngIf="!talentnook?.talent">
+					<div class="talent-autocomplete" *ngIf="!isJoinRequest">
+						{{'would_like_to_learn' | translate}}
+						<input ngui-auto-complete
+		                   formControlName="talent"
+		                   [source]="talents"
+		                   [list-formatter]="autocompleListFormatter"
+		                   max-num-list="7"
+		                   min-chars="1"
+		                   placeholder="Talent"
+		                   class="skill input form-control">
+						<p class="form-err-msg request-err-msg" *ngIf="requestForm.controls['talent'].hasError('required') && submitted">{{'err_enter_talent' | translate}}</p>
+						<p class="form-err-msg request-err-msg" *ngIf="requestForm.controls['talent'].hasError('mismatchTalent') && submitted">{{'err_mismatch_talent' | translate}}</p>
+					</div>
+				</ng-container>
+			</div>
+		</div>
+
+		<div class="col-md-10 request-right-container" *ngIf="contentLoaded" >
+			<div class="request-right-main" *ngIf="isLaunched">
+				<div class="col-md-6 pad-0 child-1" >
+					<div class="col-md-12 pad-0 child-2" >
+						<div class="light-grey-request">{{'lessons_for' | translate}}</div>
+
+						<div class="bold-request">{{talentnook?.talent}}</div>
+						<div class="request-right-divider"></div>
+						<div class="light-grey-request">{{'timings' | translate}}</div>
+						
+						<ng-container *ngIf="!hasScheduleData()">
+							<div>
+								<div class="bold-request">{{'no_schedule_defined_yet' | translate}}</div>
+							</div>
+						</ng-container>
+
+						<ng-container *ngIf="hasScheduleData()">
+							<div *ngIf="talentnook?.schedule?.sunday?.length">
+								<div class="bold-request small-bold">{{'sunday' | translate}}</div>
+								<div class="light-grey-request small-grey">{{talentnook?.schedule?.sunday | formatDaySchedule }}</div>
+							</div>
+
+							<div *ngIf="talentnook?.schedule?.monday?.length">
+								<div class="bold-request small-bold">{{'monday' | translate}}</div>
+								<div class="light-grey-request small-grey">{{talentnook?.schedule?.monday | formatDaySchedule }}</div>
+							</div>
+
+							<div *ngIf="talentnook?.schedule?.tuesday?.length">
+								<div class="bold-request small-bold">{{'tuesday' | translate}}</div>
+								<div class="light-grey-request small-grey">{{talentnook?.schedule?.tuesday | formatDaySchedule }}</div>
+							</div>
+
+							<div *ngIf="talentnook?.schedule?.wednesday?.length">
+								<div class="bold-request small-bold">{{'wednesday' | translate}}</div>
+								<div class="light-grey-request small-grey">{{talentnook?.schedule?.wednesday | formatDaySchedule }}</div>
+							</div>
+
+							<div *ngIf="talentnook?.schedule?.thursday?.length">
+								<div class="bold-request small-bold">{{'thursday' | translate}}</div>
+								<div class="light-grey-request small-grey">{{talentnook?.schedule?.thursday | formatDaySchedule }}</div>
+							</div>
+
+							<div *ngIf="talentnook?.schedule?.friday?.length">
+								<div class="bold-request small-bold">{{'friday' | translate}}</div>
+								<div class="light-grey-request small-grey">{{talentnook?.schedule?.friday | formatDaySchedule }}</div>
+							</div>
+
+							<div *ngIf="talentnook?.schedule?.saturday?.length">
+								<div class="bold-request small-bold">{{'saturday' | translate}}</div>
+								<div class="light-grey-request small-grey">{{talentnook?.schedule?.saturday | formatDaySchedule }}</div>
+							</div>
+						</ng-container>
+
+						<!-- <div>	
+							<div class="bold-request small-bold">Sun</div>
+							<div class="light-grey-request small-grey">11:30PM to 12:30PM</div>
+						</div> -->							
+						<div class="request-right-divider"></div>						
+
+						<div class="half-request">
+							<!-- <div class="light-grey-request">{{'date_started' | translate}}</div> -->
+							<!-- <div class="bold-request">{{ ((talentnook?.startedOn) ? (talentnook?.startedOn | timeAgo) : '---') }}</div>	 -->
+
+							<ng-container *ngIf="!talentnook?.startedOn">
+								<div class="light-grey-request">{{ 'date_started' | translate }}</div> 
+								<div class="bold-request">{{ 'not_yet_started' | translate }}</div>
+							</ng-container>
+	                        <ng-container *ngIf="commonService.isFutureLesson(talentnook?.startedOn)">
+	                            <div class="light-grey-request">{{ 'starting_on' | translate }}</div> 
+	                            <div class="bold-request">{{talentnook?.startedOn | date: env.DATE_FORMAT}}</div>
+	                        </ng-container>
+	                        <ng-container *ngIf="talentnook?.startedOn && !commonService.isFutureLesson(talentnook?.startedOn)">
+	                            <div class="light-grey-request">{{ 'date_started' | translate }}</div>
+	                            <div class="bold-request">{{talentnook?.startedOn | date: env.DATE_FORMAT}}</div>
+	                        </ng-container>
+						</div>
+						<div class="half-request">
+							<div class="light-grey-request">{{'last_held_on' | translate}}</div>
+							<div class="bold-request">{{ ((talentnook?.lastClassOn) ? (talentnook?.lastClassOn | timeAgo) : '---') }}</div>	
+						</div>
+						<div class="request-right-divider"></div>
+						<div class="light-grey-request">{{'hosted_by' | translate}}</div>
+						<div class="bold-request">{{ talentnook?.hostId?.name?.full | name:talentnook?.hostId?.fname: talentnook?.hostId?.lname: true }}</div>
+						<div class="request-right-divider"></div>
+						<div class="light-grey-request">{{'address' | translate}}</div>
+						<div class="bold-request">
+							{{ {address: talentnook?.address, unitno: talentnook?.unitno} | address:'full' }} 
+							<div class="request-away-txt">
+								<span>{{'distance' | geoDistance: talentnook?.location?.coordinates[1]: talentnook?.location?.coordinates[0]: user?.location?.coordinates[1]: user?.location?.coordinates[0]}} {{'away' | translate}}</span>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 pad-0 request-fees-section">
+					<div class="col-md-12 pad-0 container-1">
+						<div class="light-grey-request container-2">
+							{{'fee_structure' | translate}}
+						</div>
+
+						<div class="request-fees-container">
+							<app-fees #feesCom (save)="saveFeesDetail($event)" [data]="feesData" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [feesEdit]="feesEdit" [gridViewMode]="'user'" [parentComponent]="'request'"></app-fees>
+						</div>
+
+						<div class="" *ngIf="talentnook?.fees?.extraFee=='Yes'">
+							<div class="light-grey-request">{{'additional_fee_per_session' | translate }}</div>
+							<div class="bold-request">{{ talentnook?.fees?.extraFeeRate | currency:'USD':true:'1.2' }} {{ 'per_session' | translate }}</div>
+
+							<div class="request-right-divider"></div>
+							<div class="light-grey-request">{{'charged_for' | translate }}</div>
+							<div class="bold-request">{{ talentnook?.fees?.extraFeeReason }}</div>
+						</div>
+
+						<div class="request-right-divider"></div>
+					</div>
+				</div>
+			</div>	
+
+			<ng-container *ngIf="!isLaunched">
+				<div class="col-md-12 pad-0 requesting-main request-bg">
+					<img src="assets/images/talentnook/request-background-talentnook.jpg" alt="request-background-talentnook" class="img-responsive">
+					<p class="request-titel-text" [innerHTML]="host_the_talentnook_at_your_home | safeHtml"></p>
+					<div class="circle-box yellow" *ngIf="!isWaitlist">
+						<label class="yellow_blue_checkox">
+						    <input type="checkbox" formControlName="parentWillingToHost"  name="parentWillingToHost"/>
+						    <span class="chekboximg"></span>
+						    <span class="label-content">{{'i_am_billing_to_host' | translate}}</span>
+						</label>
+					</div>
+				</div>
+
+				<div class="col-md-12 pad-0 requesting-main">
+					<div class="add-student-container col-md-12 pad-0" *ngIf="renderChild">
+						<div>
+							<app-schedule #scheduleCom (save)="saveScheduleDetail($event)" [data]="scheduleData" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [scheduleEdit]="scheduleEdit" [parentComponent]="'request'" [parentRequests]="parentRequests" [hasParentRequest]="hasParentRequest" (returnScheduleData)="returnScheduleData($event)"></app-schedule>
+							<ng-container *ngIf="selectedScheduleRequest">
+								<p *ngIf="showScheduleErr && submitted" class="form-err-msg request-err-msg">{{'err_select_fill_schedule_err' | translate}}</p>
+							</ng-container>
+							<ng-container *ngIf="!selectedScheduleRequest">
+								<p *ngIf="showScheduleErr && submitted" class="form-err-msg request-err-msg">{{'err_schedule_err' | translate}}</p>
+							</ng-container>
+						</div>
+					</div>
+				</div>
+			</ng-container>
+
+			<div class="col-md-12 pad-0 requesting-main margin-bottom-0">
+				<app-student [parentObject]="user" (returnStudentData)="returnStudentData($event)" [parentComponent]="'request'" ></app-student>
+			</div>
+			
+			<div class="col-md-12 pad-0 request-check-container" formArrayName="students">
+		        <ng-container *ngFor="let student of requestForm.controls.students['controls']; index as i">
+					<ng-container [formGroupName]="i">
+
+						<ng-container *ngIf="student.get('isAlreadyJoined').value">
+							<div class="circle-box blue">
+								<label class="gray_blue_checkox checked">
+								    <!-- <input type="checkbox" formControlName="isJoined"  name="test"/> -->
+								    <span class="chekboximg"></span><span class="label-content">{{student.get('full').value | name:student.get('fname').value: student.get('lname').value: false: true}}</span>
+								</label>
+							</div>
+						</ng-container>
+						<ng-container *ngIf="!student.get('isAlreadyJoined').value">
+							<div class="circle-box" [ngClass]="{'blue': student.get('isJoined').value, 'white': !student.get('isJoined').value }">
+								<label class="gray_blue_checkox">
+								    <input type="checkbox" formControlName="isJoined" (change)="showHideStudentError()"  name="test"/>
+								    <span class="chekboximg"></span><span class="label-content">{{student.get('full').value | name:student.get('fname').value: student.get('lname').value: false: true}}</span>
+								</label>
+							</div>
+							<input type="hidden" formControlName="_id" > 
+						</ng-container>
+
+					</ng-container>
+		        </ng-container>
+		        <p *ngIf="showStudentErr && submitted" class="form-err-msg request-err-msg">{{'err_studentnot_selcted' | translate}}</p>
+	        </div>
+
+			<div class="col-md-12 request-comment-container">
+				<input type="text" formControlName="comment"  name="comment" placeholder="{{'phol_comments..' | translate}}" class="form-control">
+				<div class="col-md-12 pad-0 request-join-container">
+					<ng-container *ngIf="isWaitlist && !isGrandfathering">
+						<div class="check-box blue">
+		                    <label class="blue_checkox">
+		                        <input type="checkbox" name="request-join" class="request-join-input" formControlName="parentWillingToHost"> 
+		                        <span class="chekboximg small"></span>
+		                        <div class="lebel-text">{{'i_am_billing_to_host' | translate}}</div>
+		                    </label>
+		                </div>&nbsp;
+					</ng-container>
+					<ng-container *ngIf="isGrandfathering">
+						<div class="check-box blue">
+		                    <label class="blue_checkox">
+		                        <input type="checkbox" name="request-join" class="request-join-input" formControlName="isGrandfathering"> 
+		                        <span class="chekboximg small"></span>
+		                        <div class="lebel-text">{{click_here_if_your_child_is_existing_student}}</div>
+		                    </label>
+		                </div>&nbsp;
+					</ng-container>					
+
+					<button class="btn btn-primary" type="submit">
+						<ng-container *ngIf="!isWaitlist && !isGrandfathering">{{'request' | translate}}</ng-container>
+						<ng-container *ngIf="isWaitlist && !isGrandfathering">{{'join_waitlist' | translate}}</ng-container>
+						<ng-container *ngIf="isGrandfathering">{{'join' | translate}}</ng-container>
+						<!-- <ng-container *ngIf="isJoinRequest && !isWaitlist">{{'join_request' | translate}}</ng-container> -->
+					</button>&nbsp;
+					<a href="javascript:void(0);" class="btn btn-default">Cancel</a>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>

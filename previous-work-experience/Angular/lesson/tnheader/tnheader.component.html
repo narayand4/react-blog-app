@@ -1,0 +1,105 @@
+<div class="talent-master-topouter fix-top-postion" [ngClass]="{'fixPosition': (parentComponent=='launch' || parentComponent=='operations' || parentComponent=='lesson')}">
+	<div class="container page-title-txt">
+		<div class="col-md-12 ">
+			<ng-container *ngIf="(parentComponent=='launch' || parentComponent=='operations') && talentnook">
+				<!-- <div class="col-md-12 col-sm-12 col-xs-12 align-center" *ngIf="talentnook?.isGrandfathering && userViewMode=='TM'">
+					<div class="">
+						<span><i class="fa fa-download"></i></span>
+						{{'transferred_to_talentnook' | translate}}
+					</div>
+				</div> -->
+				<div class="col-md-3 col-sm-12 col-xs-12 portrait align-center below-ipad-hide align-left">
+					<div class="back-button">
+						<a  routerLink="/mylessons">
+			                <div class="btn mytalentnnok-btn">
+			                	<span><i class="fa fa-long-arrow-left"></i></span>
+			                	{{'my_lessons' | translate}}
+			                </div>
+			            </a>
+					</div>
+				</div>
+
+				<div class="col-md-6 col-sm-12 col-xs-12 portrait align-center ">
+					<ng-container *ngIf="talentnook?.status=='ACTIVE'">
+						<a  class="tn-public-view title-txt" routerLink="/lesson/{{talentnook?._id}}">
+							<!-- {{'request_for' | translate}} {{ talentnook?.name }} -->
+							<ng-container *ngIf="talentnook?.name && tnName">{{ tnName }}</ng-container>
+						</a>
+					</ng-container>
+					<ng-container *ngIf="talentnook?.status!='ACTIVE'">
+						<!-- {{'request_for' | translate}} {{ talentnook?.name }} -->
+						<span class="title-txt"><ng-container *ngIf="talentnook?.name && tnName">{{ tnName }}</ng-container></span>
+					</ng-container>
+					
+					<div class="" *ngIf="talentnook?.isGrandfathering && userViewMode=='TM'">
+						<img class="img-responsive inline-block gf_icon" src="assets/images/gf-white-talentnook.png" alt="gf-white-talentnook" title="{{'transferred_to_talentnook' | translate}}">
+						{{'transferred_to_talentnook' | translate}}
+						<!-- <span><i class="fa fa-download"></i></span> -->
+					</div>
+				</div>
+				<div class="col-md-3 col-sm-12 col-xs-12 align-right no-padding portrait align-center ">
+					<div class="below-ipad-show">
+						<a  class="back-button-tn" routerLink="/mylessons">
+							<i class="fa fa-arrow-circle-left" aria-hidden="true"></i>
+						</a>
+					</div>
+					<div class="notification">
+	                    <div class="head-notifi-inner">
+	                        <a aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="javascript:void(0)" role="button" (click)="scrollToMessage()">
+	                          <i class="fa fa-commenting-o" aria-hidden="true"></i>
+	                          <span class="head-notific">{{msgData?.unseenMsg}}</span>
+	                        </a>
+	                    </div>
+	                </div>
+	                <ng-container *ngIf="parentComponent=='operations' && userViewMode=='TM'">
+		                <div class="cta-buttons">
+		                    <button class="btn btn-default" *ngIf="talentnook?.status=='SUSPENDED'" (click)="operationActions('activate')">{{'activate' | translate}}</button>
+		                    <button class="btn btn-default" *ngIf="talentnook?.status=='ACTIVE'" (click)="operationActions('suspend')">{{'suspend' | translate}}</button>
+		                    <button class="btn btn-primary" *ngIf="talentnook?.status!='CLOSED' && talentnook?.status!='COMPLETED'" (click)="operationActions('mark_complete')">{{'mark_as_complete' | translate}}</button>
+		                </div>
+	                </ng-container>
+	                <ng-container *ngIf="parentComponent=='launch'">
+	                	<!-- NOW THERE IS NO EDIT WE WILL HAVE INLINE EDIT FOR SCHEDULE -->
+		                <!-- <div class="cta-buttons" *ngIf="userViewMode=='PARENT'">
+		                    <button class="btn default-button skyblue" (click)="editRequest()">{{'edit_my_request' | translate}}</button>
+		                </div> -->
+		                <div class="cta-buttons" *ngIf="userViewMode=='TM'">
+		                    <button class="btn btn-primary" *ngIf="talentnook?.status=='REQUESTED'" (click)="acknowledgeRequest()">{{'acknowledge' | translate}}</button>
+		                    <button class="btn btn-primary" *ngIf="talentnook?.status=='ACKNOWLEDGED'" (click)="triggerAccept(true)">{{'launch' | translate}}</button>
+		                    <button class="btn btn-default" *ngIf="canDecline()" (click)="acceptDecline(false)">{{'decline' | translate}}</button>
+		                </div>
+	                </ng-container>
+				</div>
+			</ng-container>
+			
+			<ng-container *ngIf="parentComponent=='request' || parentComponent=='join'">
+				<div class="col-md-12 col-sm-12 col-xs-12 portrait align-center ">
+					<span class="title-txt" *ngIf="!talentnook">{{'request_a_lesson' | translate}}</span>
+					<span class="title-txt" *ngIf="talentnook"><ng-container *ngIf="talentnook?.name && tnName">{{ tnName }}</ng-container></span>
+				</div>				
+			</ng-container>
+
+			<ng-container *ngIf="parentComponent=='lesson'">
+				<div class="col-md-3 col-sm-12 col-xs-12 portrait align-center below-ipad-hide align-left">
+					<div class="back-button">
+						<a routerLink="/lesson/operations/{{talentNookId}}">
+			                <div class="btn mytalentnnok-btn">
+			                	<span><i class="fa fa-long-arrow-left"></i></span>
+			                	{{'lesson_operation' | translate}}
+			                </div>
+			            </a>
+					</div>
+				</div>	
+				<div class="col-md-6 col-sm-12 col-xs-12 portrait align-center ">
+					<a class="tn-public-view title-txt" href="javascript:void(0);">{{'all_lessons' | translate}} {{ talentnook?.name }}</a>
+				</div>	
+			</ng-container>
+
+		</div>
+		<div class="col-md-12 align-center" *ngIf="(parentComponent=='launch' || parentComponent=='operations') && header_msg">
+			{{header_msg}}
+		</div>
+	</div>
+</div>	
+<!-- FOR CONFIRMATION OF DELETE -->
+<app-confirmbox (confirmOutput)="confirmOutput($event)" [title]="confirmTitle" [content]="confirmContent" [showConfirm]="showConfirm" [noButton]="noButton" [yesButton]="yesButton" [showReasonBox]="showReasonBox"></app-confirmbox>

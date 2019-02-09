@@ -1,0 +1,262 @@
+/* MAIN CONTAINER */
+/*.msgboard-maincontainer{
+    background: #e7f1f4;
+    margin: 0px auto;
+    padding: 20px 0px;
+    color: #000;
+    clear: both;
+}
+.msg-container{
+    min-height: 200px;
+    max-height: 260px;
+    overflow-y: auto;
+}
+.msg-heading{
+    margin: 0px auto;
+    text-align: center;
+}
+.msg-heading h2{
+}*/
+
+/* HEADING */
+/*.msgboard-maincontainer .headingline{
+    margin: 0px auto;
+}*/
+
+
+/* USER SECTION */
+/*.incoming .user,
+.outgoing .user{
+    display: table;
+    width: 100%;
+}
+.outgoing .user{
+    text-align: right;
+}
+.incoming .user .user-img,
+.incoming .user .user-name,
+
+.outgoing .user .user-img,
+.outgoing .user .user-name{
+    display: table-cell;
+    vertical-align: middle;
+}
+.incoming .user .user-img,
+.outgoing .user .user-img{
+    width: 45px;
+    height: 45px;
+    line-height: 35px;
+    border: 1px solid #dbdbdb;
+    background: #FFF;
+    display: table-cell;
+}
+.incoming .user .user-name,
+.outgoing .user .user-name{
+    font-family: 'open_sanssemibold';
+    padding: 0px 0px 0px 8px;
+}
+.outgoing .user .user-name{
+    padding: 0px 8px 0px 8px;
+}*/
+
+
+/* MESSAGE SECTION */
+/*.incoming .msg,
+.outgoing .msg{
+    margin: 5px 0px 0px 0px;
+    width: 100%;
+}
+.incoming .msg .content,
+.outgoing .msg .content,
+.outgoing .msg .edit-content{
+    background: #a2cede;
+    color: #000;
+    border-radius: 5px;
+    padding: 10px;
+    width: 95%;
+    display: inline-block;
+    float: left;
+    line-height: 1.8;
+    margin-top: 15px;
+}
+.outgoing .msg .edit-content input{
+    background: #fff;
+    color: #000;
+    width: 100%;
+    border: none;
+    font-style: italic;
+    float: right;
+    padding: 0px 3px;
+}
+.outgoing .msg .edit-content,
+.outgoing .msg .content{
+    background: #6cdee4;
+    float: right;
+}
+.incoming .msg .status,
+.outgoing .msg .status{
+    background: transparent;
+    color: #F00;
+    width: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    float: left;
+}
+.incoming .msg .status.seen,
+.outgoing .msg .status.seen{
+    color: #FFF;
+}
+.outgoing .msg,
+.outgoing .msg .content,
+.outgoing .msg .status,
+.outgoing .msg .status.seen{
+    float: right;
+}
+
+.incoming .meta-info,
+.outgoing .meta-info{
+    padding: 5px 0px;
+    background: transparent;
+    text-align: left;
+    color: #000;
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 12px;
+}
+.outgoing .meta-info{
+    padding: 5px 0px 5px 20px;
+}
+.incoming .meta-info span,
+.outgoing .meta-info span{
+    display: inline-block; 
+    padding: 0px 5px;
+    border-left: 1px solid #ccc;
+}
+.incoming .meta-info span.firstcta,
+.outgoing .meta-info span.firstcta{
+    border: none;
+}
+.incoming .meta-info span i,
+.outgoing .meta-info span i{
+    color: #03adba;
+}
+.incoming .meta-info .separator,
+.outgoing .meta-info .separator{
+    display: inline-block;
+}*/
+
+
+/* WRITER SECTION */
+/*.msg-writer{
+    margin: 10px auto;
+    width: 100%;
+    border-radius: 4px;
+    box-shadow: 0px 4px 2px 0px #BBB;
+    background: #fff;
+}
+.msg-writer table{
+    width: 100%;
+}
+.msg-writer table td{
+    padding: 5px;
+}
+.msg-writer table .chaticon{
+    width: 38px;
+    color: #aaa;
+    font-size: 20px;
+    text-align: center;
+}
+.msg-writer table .inputbox{
+    
+}
+.msg-writer table .inputbox .msg-input{
+    width: 100%; 
+    border: none;
+    font-style: italic;
+}
+.msg-writer table .sendicon{
+    width: 38px;
+    color: #03adba;
+    font-size: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+.private-cancel-link{
+    float: right;
+    margin-right: 20px;
+}*/
+
+
+/* EDITING RELATED */
+/*.typing-status{
+    visibility: hidden;
+    width: 95%;
+    margin: -15px auto 0px auto;
+    min-height: 20px;
+    position: absolute;
+}
+.private-msg-status{
+    width: 98%;
+    margin: -15px auto 0px auto;
+    min-height: 20px;
+    position: absolute;
+    text-align: center;
+}
+.typing-status.visible{
+    visibility: visible;
+}
+.editing-pencil{
+    color: #03adba;
+    font-size: 16px;
+}
+.user-editing-img,
+.privateuser-editing-img{
+    width: 25px;
+    height: 25px;
+    line-height: 15px;
+    border: 1px solid #dbdbdb;
+    background: #FFF;
+    display: table-cell;
+}
+.privateuser-editing-img{
+    border: 0px !important;
+}
+.private-cancel-link{
+    float: right;
+    margin: -15px 0px 0px 0px;
+    position: relative;
+    right: 0px;
+    font-size: 12px;
+    color: #03adba;
+}
+
+.edit-content.chat-bubble:after,
+.content.chat-bubble:after {
+    visibility: visible;
+    -moz-transition: visibility 0s linear .3s;
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    top: 58px;
+    box-sizing: border-box;
+    -webkit-transform: rotate(135deg);
+    transform: rotate(135deg);
+}
+.outgoing .msg .edit-content.chat-bubble:after,
+.outgoing .msg .content.chat-bubble:after {
+    border: 0.6em solid #6cdee4;
+    border-color: transparent transparent #6cdee4 #6cdee4;
+    right: 2.2em;
+}
+.incoming .msg .edit-content.chat-bubble:after,
+.incoming .msg .content.chat-bubble:after {
+    border: 0.6em solid #a2cede;
+    border-color: transparent transparent #a2cede #a2cede;
+    left: 1.2em;
+}*/
+/* EDITING RELATED */
+
+.msg-heading{
+    margin: 10px 0px;
+}

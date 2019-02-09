@@ -1,0 +1,14 @@
+#talentGoogleMap {
+    position: relative;
+    height: 574px;
+    width: 100%;
+}
+.talent-legend{
+	width: 100%;
+    clear: both;
+    min-height: 42px;
+    font-size: 13px;
+}
+.talent-legend div {
+    display: inline-block;
+}

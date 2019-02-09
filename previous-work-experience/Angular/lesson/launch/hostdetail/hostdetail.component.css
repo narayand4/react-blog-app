@@ -1,0 +1,31 @@
+.heading{
+	font-size: 13px;
+	margin-bottom: 10px;
+}
+.info{
+	float: left;
+	padding-left: 10px;
+	width: 83%;
+}
+.make-me-host{
+	float: right;
+}
+.info .name{
+	font-size: 14px;
+	font-family: 'open_sanssemibold';
+}
+.info .address{
+	font-size: 14px;
+}
+.info .address i{
+	color: #0ab1c3;
+}
+
+.user-img{
+	width: 45px;
+    height: 45px;
+    line-height: 35px;
+    border: 1px solid #dbdbdb;
+    background: #FFF;
+    float: left;
+}

@@ -1,0 +1,271 @@
+<ng-container *ngIf="rightpanelViewmode=='PARENT'">
+	<div class="parent-list-view-rightinner innerpage-min-height" *ngIf="dataLoaded">
+		<div *ngIf="!(lessons?.length>0)" class="mytalentnook-not-found">
+			<div class="txtcontainer">
+				<div class="talentnook-error">
+				  <div class="text">
+				    <div class="content">
+				    	<span [innerHTML]="errorMessage"></span> 
+				    </div>
+				    <div class="content">
+				    	<a href="javascript:void(0);" routerLink="/dashboard" [innerHTML]="errorMessageLink"></a>
+				    </div>
+				  </div>
+				</div>
+			</div>
+		</div>
+
+		<ng-container *ngIf="lessons?.length>0">
+		<div class="parent-list-filters col-xs-12 col-sm-12 col-md-12 remove-padding-margin-xs">
+			<form [formGroup]="requestStatusForm" novalidate (ngSubmit)="refreshList()">
+				<ng-container formArrayName="statusBoxes">
+					<div class="circle-box lightblue_white" [formGroupName]="'0'">
+						<label class="lightblue_white_checkox">
+						    <!-- <input type="checkbox" name="show_all" id="show_all"/> -->
+						    <input type="checkbox" formControlName="isSelected" (click)="updateStatus($event,'show_all')" />
+						    <span class="chekboximg"></span>
+						    <span class="label-content">{{'show_all' | translate}}</span>
+						</label>
+					</div>
+					<div class="circle-box lightblue_white" [formGroupName]="'1'">
+						<label class="lightblue_white_checkox">
+						    <input type="checkbox" formControlName="isSelected" (click)="updateStatus($event,'requested')" />
+						    <span class="chekboximg"></span>
+						    <span class="label-content">{{'requested' | translate}}</span>
+						</label>
+					</div>
+					<div class="circle-box lightblue_white" [formGroupName]="'2'">
+						<label class="lightblue_white_checkox">
+						    <input type="checkbox" formControlName="isSelected" (click)="updateStatus($event,'ongoing')" />
+						    <span class="chekboximg"></span>
+						    <span class="label-content">{{'ongoing' | translate}}</span>
+						</label>
+					</div>
+					<div class="circle-box lightblue_white" [formGroupName]="'3'">
+						<label class="lightblue_white_checkox">
+						    <input type="checkbox" formControlName="isSelected" (click)="updateStatus($event,'waiting_to_launch')" />
+						    <span class="chekboximg"></span>
+						    <span class="label-content">{{'waiting_to_launch' | translate}}</span>
+						</label>
+					</div>
+					<div class="circle-box lightblue_white" [formGroupName]="'4'">
+						<label class="lightblue_white_checkox">
+						    <input type="checkbox" formControlName="isSelected" (click)="updateStatus($event,'inactive')" />
+						    <span class="chekboximg"></span>
+						    <span class="label-content">{{'inactive' | translate}}</span>
+						</label>
+					</div>
+					<div class="circle-box lightblue_white" [formGroupName]="'5'">
+						<label class="lightblue_white_checkox">
+						    <input type="checkbox" formControlName="isSelected" (click)="updateStatus($event,'closed')" />
+						    <span class="chekboximg"></span>
+						    <span class="label-content">{{'close/completed' | translate}}</span>
+						</label>
+					</div>
+				</ng-container>
+			</form>
+		</div>	
+		
+		<div class="parent-list-datacontainer col-xs-12 col-sm-12 col-md-12 remove-padding-margin-xs ">
+			<ng-container *ngIf="!(talentnookList?.length>0)">
+				<div class="col-md-12 tn_not_found">{{'lbl_lesson_not_available' | translate}}</div>
+			</ng-container>
+			<ng-container *ngFor="let tn of talentnookList;">
+				<div class="col-md-12 datacontainer pointer" (click)="commonService.redirectionTNDetailPage(tn)">
+					<div class="col-md-3 col-xs-12 col-sm-12 tm-cell">
+						<div class="tm-container">
+							<div class="tm-img-container">
+								<div class="tmimg-container img-container">
+									<img [src]="commonService.getProfileImage(tn?.tmId?.profileImage,tn?.tmId?._id)" (error)="commonService.setDefaultProfileImage($event)" >
+								</div>
+							</div>
+							<div class="tm-info">
+								<div class="tm-heading">{{ tn?.tmId?.name?.full | name:tn?.tmId?.fname: tn?.tmId?.lname }}</div>
+								<div class="tm-talent" *ngIf="tn?.talent">{{tn?.talent}}</div>
+								<div class="tm-talent" *ngIf="!tn?.talent"> -- </div>
+								<div class="tm-reqeust-type">
+									<button *ngIf="tn?.status=='ACTIVE'" class="default-btn {{tn?.status}}_btn">{{ 'ongoing' | translate }}</button>
+									<button *ngIf="tn?.status!='ACTIVE'" class="default-btn {{tn?.status}}_btn">{{tn?.status}}</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-4 col-xs-12 col-sm-12 host-cell">
+						<div class="host-img-container">
+							<div class="hostimg-container img-container">
+								<img [src]="commonService.getProfileImage(tn?.hostId?.profileImage,tn?.hostId?._id)" (error)="commonService.setDefaultProfileImage($event)" >
+							</div>
+						</div>
+						<div class="host-info">
+							<div class="host-heading">{{ tn?.hostId?.name?.full | name:tn?.hostId?.fname: tn?.hostId?.lname }}</div>
+							<div class="host-address"><span class="blue"><i class="fa fa-map-marker"></i></span> {{ {address: tn?.tmId?.address, unitno: tn?.tmId?.unitno} | address:'short' }}</div>
+						</div>
+					</div>
+					<div class="col-md-5 col-xs-12 col-sm-12 tn-cell">
+						<!-- <div class="tn-msg col-md-2 col-xs-2 col-sm-2">
+							<div class="tn-view-message notside-border">
+						    	<span class="blue"><i class="fa fa-envelope"></i></span>
+						    	<span class="counts">0</span>
+						  	</div>
+						</div> -->
+						<div class="notification">
+						    <div class="head-notifi-inner">
+						        <a href="javascript:void(0)">
+						          <i aria-hidden="true" class="fa fa-commenting-o"></i>
+						          <span class="head-notific">{{tn?.totalUnseenMsg}}</span>
+						        </a>
+						    </div>
+						</div>
+						<div class="tn-student-list col-md-4 col-xs-4 col-sm-4">
+							<div class="gray_heading">{{'student' | translate}}</div>
+							<ng-container *ngFor="let request of tn?.students;">
+								<ng-container *ngIf="tn?.tmId?._id == user._id">
+									{{ request?.student?.name?.full | name:request?.student?.fname: request?.student?.lname }}
+								</ng-container>
+								<ng-container *ngIf="(tn?.tmId?._id != user._id) && (request?.parent?._id == user._id)">
+									<!-- <div class="student-list" *ngIf="request.isJoined"> -->
+									{{ request?.student?.name?.full | name:request?.student?.fname: request?.student?.lname }}
+									<!-- </div> -->
+								</ng-container>
+							</ng-container>
+						</div>
+						<div class="tn-time col-md-3 col-xs-3 col-sm-3">
+							<ng-container *ngIf="!tn?.startDate">
+								<div class="gray_heading">{{ 'not_yet_started' | translate }}</div>
+							</ng-container>
+	                        <ng-container *ngIf="commonService.isFutureLesson(tn?.startDate)">
+	                            <div class="gray_heading">{{ 'starting_on' | translate }}</div> 
+	                            <div class="student-list">{{tn?.startDate | date: env.DATE_FORMAT}}</div>
+	                        </ng-container>
+	                        <ng-container *ngIf="tn?.startDate && !commonService.isFutureLesson(tn?.startDate)">
+	                            <div class="gray_heading">{{ 'date_started' | translate }}</div>
+	                            <div class="student-list">{{tn?.startDate | date: env.DATE_FORMAT}}</div>
+	                        </ng-container>
+						</div>
+						<div class="tn-fees col-md-3 col-xs-3 col-sm-3" *ngIf="tn?.status=='ACTIVE'">
+							<div class="gray_heading">{{'payment_due' | translate}}</div>
+							<div class="student-list">{{ getTalentnookwisePayment(tn?._id) | currency:'USD':true }}</div>
+						</div>
+					</div>
+				</div>
+			</ng-container>
+		</div>
+		</ng-container>
+	</div>
+</ng-container>
+
+<ng-container *ngIf="rightpanelViewmode=='TM'">
+	<div class="dashbaord-list-view-rightinner innerpage-min-height" *ngIf="dataLoaded">
+	    <!-- Nav tabs -->
+	    <div class="tn-nav-container">
+	        <ul class="lesson-nav lesson-nav-tabs">
+	            <li role="presentation" [ngClass]="{'active': currentView=='map'}" (click)="changeView('map')"><a href="javascript:void(0);">{{'map_view' | translate}}</a></li>
+	            <li role="presentation" [ngClass]="{'active': currentView=='list'}" (click)="changeView('list')"><a href="javascript:void(0);">{{'list_view' | translate}}</a></li>
+	        </ul>
+	        <div class="list-view-top-right">
+	        	<div class="list-viewShowInactive">
+	            	<div class="check-box blue">
+	                    <label class="blue_checkox">
+	                		<input class="homecheckbox" name="showInactive" id="showInactive" type="checkbox" [checked]="showInactive" (change)="showInactive = !showInactive">
+	                        <span class="chekboximg small"></span>
+	                        <div class="lebel-text">{{'show_inactive' | translate}}</div>
+	                    </label>
+	                </div>
+	            </div>
+	            <ng-container *ngIf="published">
+	              <a routerLink="/lesson/create" class="btn launch-newtalnok btn-primary" *ngIf="user?.verifiedBackground==true">
+	                {{'launch_new_lesson' | translate}}
+	              </a>
+	            </ng-container>
+	            <ng-container *ngIf="!published">
+	              <a href="javascript:void(0);" class="btn launch-newtalnok faded-newtalnok btn-primary">
+	                {{'launch_new_lesson' | translate}}
+	              </a>
+	            </ng-container>
+	        </div>
+	    </div>                        
+
+	    <!-- Tab panes -->
+	    <div class="tab-content">
+	        <div class="lessson-tab-pane active" id="mapview" [ngClass]="{'show': currentView=='map', 'hide': currentView!='map'}">
+	            <!--  ERROR WHEN TALENTNOOK NOT FOUND -->
+	            <div *ngIf="!hasTalentnooks" class="mytalentnook-not-found">
+	              <div class="txtcontainer">
+	                <div class="talentnook-error">
+	                  <div class="text">
+
+	                    <div class="content"><span [innerHTML]="errorMessage"></span> <ng-container *ngIf="!published">Please check your <a routerLink='/user'>member profile</a> for status.</ng-container></div>
+
+	                  </div>
+	                </div>
+	              </div>
+	            </div>
+	            <!--  ERROR WHEN TALENTNOOK NOT FOUND -->
+	            
+	            <div class="mapview-pannal" *ngIf="hasTalentnooks">
+	              	<app-mapview [currentView]="currentView" [showInactive]="showInactive" [lessons]="lessons" [hasTalentnooks]="hasTalentnooks"></app-mapview>
+	            </div>
+	        </div>
+
+	        <div class="lesson-tab-pane" id="vist-view" [ngClass]="{'show': currentView=='list', 'hide': currentView!='list'}">
+	            <!--  ERROR WHEN TALENTNOOK NOT FOUND -->
+	            <div *ngIf="!hasTalentnooks" class="mytalentnook-not-found">
+	              	<div class="txtcontainer">
+	                	<div class="talentnook-error">
+	                  		<div class="text">
+	                    		<div class="content"><span [innerHTML]="errorMessage"></span> <ng-container *ngIf="!published">Please check your <a routerLink='/user'>member profile</a> for status.</ng-container></div>
+	                  		</div>
+	                	</div>
+	              	</div>
+	            </div>
+	            <!--  ERROR WHEN TALENTNOOK NOT FOUND -->
+
+	            <div class="dashbaord-list-view-content" *ngIf="hasTalentnooks" [ngClass]="{'show': hasTalentnooks, 'hide': !(hasTalentnooks)}">
+	            	<!-- <div class="dashbaord-list-view-content" *ngIf="hasTalentnooks && !env.DEBUG_MODE"> -->
+
+	            	<!-- Inactive Talentnooks -->
+	              	<div class="dashbaord-list-view-pannal" [ngClass]="{'show': (showInactive && hasData(4)), 'hide': !(showInactive) || !hasData(4)}">
+	                	<div class="list-view-con-header">{{'inactive' | translate}}</div>
+	                	<div class="dashbaord-list-view-sub-outer">
+	                  		<app-listview [lessons]=gridData?.inactive [type]="4"></app-listview>
+	                	</div>  
+	              	</div>
+	              	<div class="dashbaord-list-view-pannal" [ngClass]="{'show': (showInactive && !hasData(4)), 'hide': !(showInactive) || hasData(4) }">
+	              		<div class="list-view-con-header">{{'inactive' | translate}}</div>
+		            	<div class="dashbaord-list-view-sub-outer">
+		            		<div class="no-data-found">{{'lbl_listview_not_lesson_found' | translate}}</div>
+		            	</div>
+		            </div>
+
+	              	<!-- Draft Talentnooks -->
+	              	<div class="dashbaord-list-view-pannal" [ngClass]="{'show': hasData(3), 'hide': !(hasData(3))}">
+	                	<div class="list-view-con-header">{{'waiting_to_launch' | translate}}</div>
+	                	<div class="dashbaord-list-view-sub-outer">
+	                  		<app-listview [lessons]=gridData?.draft [type]="3"></app-listview>
+	                	</div>  
+	              	</div>
+
+	              	<!-- New Talentnooks -->
+	              	<div class="dashbaord-list-view-pannal" [ngClass]="{'show': hasData(1), 'hide': !(hasData(1))}">
+	                	<div class="list-view-con-header">{{'new_request' | translate}}</div>
+	                	<div class="dashbaord-list-view-sub-outer">
+	                  		<app-listview [lessons]=gridData?.new [type]="1"></app-listview>
+	                	</div>  
+	              	</div>
+
+	              	<!-- Ongoing Talentnooks -->
+	              	<div class="dashbaord-list-view-pannal" [ngClass]="{'show': hasData(2), 'hide': !(hasData(2))}">
+	                	<div class="list-view-con-header">{{'ongoing' | translate}}</div>
+	                	<div class="dashbaord-list-view-sub-outer">
+	                  		<app-listview [lessons]=gridData?.ongoing [type]="2"></app-listview>
+	                	</div>  
+	              	</div>
+	            </div>
+
+	            <div [ngClass]="{'hide': hasTalentnooks, 'show': !(hasTalentnooks)}">
+	            	<div class="no-data-found">{{'lbl_listview_not_lesson_found' | translate}}</div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+</ng-container>

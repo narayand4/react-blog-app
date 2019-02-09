@@ -1,0 +1,170 @@
+<div class="msgboard-maincontainer" id="msgboard-maincontainer">
+	<div class="col-md-12 no-padding">
+		<div class="msg-heading">
+			<h4 class="tmheading-black">{{'message_board' | translate}}</h4>
+		</div>
+
+		<div class="msg-container" #msgContainer id="msgContainer" (scroll)="onScroll($event)">
+			<ng-container *ngFor="let objectData of messages;">
+				<ng-container *ngIf="isSystemGenerated(objectData)">
+					<div class="sysmessage col-md-12 col-xs-12 col-sm-12 no-padding">
+						<div class="user">
+							<div class="user-name">
+								<div class="msg">
+									<div class="content">{{objectData?.message}}</div>
+								</div>
+								<div class="meta-info">
+									<span class="datetime firstcta">{{'received' | translate}} {{objectData?.createdOn | date:env.DATE_FORMAT}}</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</ng-container>
+
+				<ng-container *ngIf="objectData?.outgoing && !objectData?.isDeleted && !isSystemGenerated(objectData)">
+					<div class="outgoing col-md-3 col-xs-12 col-sm-3 no-padding clearboth">&nbsp;</div>
+						<div class="outgoing col-md-9 col-xs-12 col-sm-9 no-padding">
+						<div class="user-name-box">
+							<a routerLink="/user/{{objectData?.msgsender?._id}}" >{{ objectData?.msgsender?.name | name:objectData?.msgsender?.fname: objectData?.msgsender?.lname }}</a>
+						</div>
+						<div class="user">
+							<div class="user-img img-container pointer" routerLink="/user/{{objectData?.msgsender?._id}}">
+								<img class="img-responsive" [src]="commonService.getProfileImage(objectData?.msgsender?.profileImage,objectData?.msgsender?._id)" (error)="commonService.setDefaultProfileImage($event)">
+							</div>
+							<div class="user-name">
+								<!-- <span class="name">{{ objectData?.msgsender?.name?.name | name:objectData?.msgsender?.fname: objectData?.msgsender?.lname: true }}</span> -->
+								
+								<ng-container *ngIf="! objectData?.edit">
+									<div class="msg">
+										<div class="content chat-bubble">{{objectData?.message}}</div>
+										<!-- <div class="status"><i class="fa fa-check" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></div> -->
+									</div>
+									<div class="meta-info">
+										<span class="datetime firstcta">{{'sent' | translate}} {{objectData?.createdOn | date:env.DATE_FORMAT}}</span>
+										<!-- <span class="separator">|</span> -->
+										<!-- <span class="cta pointer">{{'send_private' | translate}} <i class="fa fa-share" aria-hidden="true"></i></span> -->
+										<span class="cta pointer" (click)="editMessage(objectData,true)">Edit <i class="fa fa-edit" aria-hidden="true"></i></span>
+										<span class="cta pointer" (click)="deleteMessage(objectData,$event)">Delete <i class="fa fa-trash" aria-hidden="true"></i></span>
+									</div>
+								</ng-container>
+								<ng-container *ngIf="objectData?.edit">
+									<div class="msg">
+										<div class="edit-content chat-bubble">
+											<input type="text" name="edittext" id="edittext" [(ngModel)]="editObject.message">
+										</div>
+										<!-- <div class="status"><i class="fa fa-check" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></div> -->
+									</div>
+									<div class="meta-info">
+										<span class="datetime firstcta cta pointer" (click)="saveMessage(objectData)">Save <i class="fa fa-save" aria-hidden="true"></i></span>
+										<span class="cta pointer" (click)="editMessage(objectData,false)">{{'cancel' | translate}} <i class="fa fa-close" aria-hidden="true"></i></span>
+									</div>
+								</ng-container>
+							</div>
+						</div>								
+					</div>
+				</ng-container>
+
+				<ng-container *ngIf="!objectData?.outgoing && !objectData?.isDeleted && !isSystemGenerated(objectData)">
+					<div class="incoming col-md-3 col-xs-12 col-sm-3 no-padding">&nbsp;</div>
+					<div class="incoming col-md-9 col-xs-12 col-sm-9 no-padding clearboth">
+						<div class="user-name-box">
+							<a routerLink="/user/{{objectData?.msgsender?._id}}" >{{ objectData?.msgsender?.name | name:objectData?.msgsender?.fname: objectData?.msgsender?.lname }}</a>
+						</div>
+						<div class="user">
+							<div class="user-img img-container pointer" routerLink="/user/{{objectData?.msgsender?._id}}">
+								<img class="img-responsive" [src]="commonService.getProfileImage(objectData?.msgsender?.profileImage,objectData?.msgsender?._id)" (error)="commonService.setDefaultProfileImage($event)">
+							</div>
+							<div class="user-name">
+								<!-- <span class="name">{{ objectData?.msgsender?.name?.name | name:objectData?.msgsender?.fname: objectData?.msgsender?.lname: true }}</span> -->
+
+								<div class="msg">
+									<div class="content chat-bubble">{{objectData?.message}}</div>
+									<!-- <div class="status"><i class="fa fa-check" aria-hidden="true"></i><i class="fa fa-check" aria-hidden="true"></i></div> -->
+								</div>
+								<div class="meta-info">
+									<span class="datetime firstcta">{{'received' | translate}} {{objectData?.createdOn | date:env.DATE_FORMAT}}</span>
+									<!-- <span class="separator">|</span> -->
+									<span class="cta pointer" *ngIf="!isSystemGenerated(objectData)" (click)="sendPrivateMessage(true,objectData)">{{'send_private' | translate}} <i class="fa fa-share" aria-hidden="true"></i></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="incoming col-md-7 col-xs-12 col-sm-5">&nbsp;</div>
+				</ng-container>
+			</ng-container>
+		</div>
+
+		<!-- SOCKET DEBUGGER -->
+		<div class="debug-status" *ngIf="DEBUG_SOCKET">
+			<span>lastevent: {{DEBUG_SOCKET_DATA}}</span>
+			<span>chatLock: {{this.chatLocks.chatLock}}</span>
+		</div>
+
+		<!-- TO SHOW TYPING START STOP WITH USER THUMB -->
+		<div class="typing-status" [ngClass]="{'visible': boardmsgTypings.length>0}">
+			<span *ngFor="let user of boardmsgTypings;">
+				<div class="user-editing-img img-container">
+					<img class="img-responsive" [src]="commonService.getProfileImage(user?.profileImage,user?._id)" (error)="commonService.setDefaultProfileImage($event)">
+				</div>
+			</span>
+			<span class="editing-pencil"><i class="fa fa-pencil" aria-hidden="true"></i></span>
+		</div>
+		<!-- TO SHOW PRIVATE MESSAGE -->
+		<div class="private-msg-status" *ngIf="privateMessage?.receiver">
+			{{'this_msg_will_be_sent_privately_to_this_user' | translate}}
+		</div>
+
+		<div class="msg-writer">
+			<form [formGroup]="messageForm" novalidate (ngSubmit)="sendMessage(messageForm.valid)">
+				<table width="100%">
+					<tr>
+						<ng-container *ngIf="!privateMessage?.receiver">
+							<td class="chaticon">
+								<i class="fa fa-commenting-o" aria-hidden="true"></i>
+							</td>
+							<td class="inputbox">
+								<input type="text" formControlName="message" (keyup)="startStopTyping($event)" class="msg-input" placeholder="{{'type_something' | translate}}" />
+							</td>
+						</ng-container>
+						<ng-container *ngIf="privateMessage?.receiver">
+							<td class="chaticon">
+								<div class="privateuser-editing-img img-container">
+									<img class="img-responsive" [src]="commonService.getProfileImage(privateMessage?.receiver?.profileImage,privateMessage?.receiver?._id)" (error)="commonService.setDefaultProfileImage($event)">
+								</div>
+								<!-- <i class="fa fa-commenting-o" aria-hidden="true"></i> -->
+							</td>
+							<td class="inputbox">
+								<input type="text" formControlName="message" class="msg-input" placeholder="{{'type_something' | translate}}" />
+								<div class="private-cancel-link pointer" (click)="sendPrivateMessage(false,null)">{{'cancel' | translate}}</div>
+							</td>
+						</ng-container>
+						<td class="sendicon">
+							<i class="fa fa-paper-plane-o" aria-hidden="true" (click)="sendMessage(messageForm.valid)"></i>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</div>
+
+<app-inlinepopup *ngIf="inlinePopupEnabled" [relativeTo]="'#messageBoardSection'" [event]="triggeringPoint" (onHide)="onHide($event)" [position]="inlinePopupPosition">
+	<!--  && inlineViewMode=='drop-confirm' -->
+	<div [ngClass]="{'hide': !dropInlinePopupEnabled, 'show': dropInlinePopupEnabled}">
+		<div class="drop-request-container">
+			<div class="drop-popup-contact">
+				<div class="col-md-12 col-sm-12 col-xs-12 no-padding" style="padding: 6px 0px;">
+					{{'cnf_delete_msg' | translate}}
+				</div>
+			</div>
+			<div class="drop-popup-contact">
+				<div class="col-md-7 col-sm-6 col-xs-6 no-padding" style="padding: 6px 0px;">
+				</div>
+				<div class="col-md-5 col-sm-6 col-xs-6 align-right no-padding">
+					<a class="btn btn-primary" (click)="dropConfirm(true)" href="javascript:void(0);">{{'delete' | translate}}</a>
+					<a class="btn btn-default" (click)="dropConfirm(false)" href="javascript:void(0);">{{'cancel' | translate}}</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</app-inlinepopup>

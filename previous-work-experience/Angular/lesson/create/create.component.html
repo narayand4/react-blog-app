@@ -1,0 +1,651 @@
+<div *ngIf="!isEditable && dataLoaded">
+    <div class="container">
+        <div class="col-md-6 col-sm-7 col-xs-12 no-padding lessonDetailBreadCrumb">
+            <app-breadcrumb [parentComponent]="'lessondetail'" [breadcrumbData]="breadcrumbData" [lessonData]="lessonData"></app-breadcrumb>
+        </div>
+    </div>
+    <section class="lesson_detail_cover">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-5 lessondetail_LeftCover">
+                    <div class="lessondetail_Cover">
+                        <div class="lessondetail_title">
+                            {{ tnData?.name || 'phol_lesson_name' | translate }} 
+                            <span>
+                                {{tnData?.fees?.hourlyRate | currency:'USD':true:'1.2'}}
+                            </span>
+                            <span>
+                                <img src="assets/images/big_free_trial.png" *ngIf="tnData?.isFreeTrial">
+                            </span>
+                        </div>
+                        <div class="lessondetail_text">{{'available_slot' | translate}} : {{ tnData.availableSlot }} &nbsp;&nbsp; {{ 'status' | translate }}: {{tnData.status}}</div>
+                        <div class="lessondetail_button">
+                            <div>
+                                <button class="btn buttoncta" (click)="commonService.iamInterested(tnData?._id)">{{'join_a_lesson' | translate }}</button>
+                                <a class="btn buttoncta" href="javascript:void(0);" (click)="commonService.contactTm(4,user)">
+                                  {{'contact' | translate }} {{ user?.name?.full | name:user?.fname: user?.lname: true }}
+                                </a>
+                            </div>
+                            <!-- <div *ngIf="parentEnabled">
+                                <a href="javascript:void(0)" class="buttoncta" (click)="authService.openComingsoon()">{{'request_a_lesson' | translate }}</a>
+                                <a href="javascript:void(0);" class="buttoncta" (click)="commonService.contactTm(4,user)">
+                                  {{'contact' | translate }} {{ user?.name?.full | name:user?.fname: user?.lname: true }}
+                                </a>                
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-7">
+                    <div class="lessondetail_right_Cover">
+                        <div class="lessondetail_rightTitle">{{ 'taught_by' | translate }}</div>
+                        <div class="lessondetail_rightImg_Cover">
+                            <div class="lessondetail_rightImg" routerLink="/talentmaster/{{tmInitialData?.username}}"> 
+                                <img [src]="commonService.getProfileImage(tmInitialData?.profileImage,tmInitialData?._id)" (error)="commonService.setDefaultProfileImage($event)" class="img-responsive">
+                            </div>
+                            <div class="lessondetail_rightText">
+                                <div class="lessondetail_rightTextTitile" routerLink="/talentmaster/{{tmInitialData?.username}}">{{ tmInitialData?.name?.full | name:tmInitialData?.fname: tmInitialData?.lname }}</div>
+                                <div class="lessondetailRight_starText">
+                                    <span class="starRating" [innerHTML]="drawRating(tmInitialData?.rate)"></span>
+                                    <ng-container *ngIf="tmInitialData?.verifiedAddress">
+                                        <img src="{{env.ADDDRESS_BADGE_IMAGE}}" class="img-responsive addressbg-img"> <span>{{ 'lsndetail_address_verified' | translate }}</span>
+                                    </ng-container>
+                                    <ng-container *ngIf="tmInitialData?.verifiedBackground">
+                                        <img src="{{env.BACKGROUND_BADGE_IMAGE}}" class="img-responsive addressbg-img lessonImg2"> <span>{{ 'lsndetail_background_check' | translate }}</span>
+                                    </ng-container>
+                                </div>
+                                <div class="lessondetailRightPara_top">
+                                    {{ 'experience' | translate }}: {{tnData?.tmId?.tm?.skills[0]?.exp}}&nbsp;&nbsp;{{ 'education' | translate }}: {{tnData?.tmId?.tm?.educations[0]?.degree}} {{tnData?.tmId?.tm?.educations[0]?.year}}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lessondetail_rightImg_Cover2" *ngIf="!hostData">
+                            <div>
+                                <span class="lessondetail_rightTitle">{{ 'hosted_by' | translate }} - </span>
+                                <span class="lessondetail_rightTextTitile">{{'not_yet_decided' | translate}}</span>
+                            </div>
+                        </div>
+                        <div class="lessondetail_rightImg_Cover2" *ngIf="hostData">
+                            <div>
+                                <span class="lessondetail_rightTitle">{{ 'hosted_by' | translate }} - </span>
+                                <span class="lessondetail_rightTextTitile" routerLink="/talentmaster/{{hostData?.username}}">{{ hostData?.name?.full | name:hostData?.fname: hostData?.lname }}</span>
+                            </div>
+                            <div class="lessondetail_text2">{{ hostData?.fullAddress }}</div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>    
+    </section><!-- lesson section 1 -->
+    <section class="lesson_Cover">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="lessonTop_para_Maincover">
+                        <div class="lessonTop_para_cover" id="policySection">
+                            <ng-container *ngIf="tnData?.sessionOutline">
+                                <div class="lessonTop_para_title">{{'lesson_outline' | translate }}</div>
+                                <div class="lessonTop_para_text" [innerHtml]="tnData?.sessionOutline | safeHtml"></div>
+                            </ng-container>
+                        </div>
+                        <div class="lessons_middle_structure">
+                            <div class="col-xs-12 col-sm-12 col-md-4 lessons_middle_pddingLeft">
+                                <div class="lessonsMiddleLeft_Cover">
+                                    <div class="lessonsMiddleLeft_Title">{{ 'lesson_detail' | translate }}</div>
+                                    <div class="lessonMiidleDurationCvoer">
+                                        <div class="lessonUl_Left">
+                                            <ul>
+                                              <li>{{'sessionDuration' | translate }}</li>
+                                              <li>{{'minStudentPerLesson' | translate }}</li>
+                                              <li>{{'studentPerLesson' | translate }}</li>
+                                              <li>{{'isFreeTrial' | translate }}</li>
+                                              <li>{{'levelstaught' | translate }}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="lessonUl_Right">
+                                            <ul>
+                                              <li>
+                                                <ng-container *ngIf="!tnData?.sessionDuration">--</ng-container>
+                                                <ng-container *ngIf="tnData?.sessionDuration">{{tnData?.sessionDuration}} Minutes</ng-container>
+                                              </li>
+                                              <li>
+                                                <ng-container *ngIf="!tnData?.minStudentPerSession">--</ng-container>
+                                                <ng-container *ngIf="tnData?.minStudentPerSession">{{tnData?.minStudentPerSession}}</ng-container>
+                                              </li>
+                                              <li>
+                                                <ng-container *ngIf="!tnData?.studentPerSession">--</ng-container>
+                                                <ng-container *ngIf="tnData?.studentPerSession">{{tnData?.studentPerSession}}</ng-container>
+                                              </li>
+                                              <li>
+                                                <ng-container *ngIf="!tnData?.isFreeTrial">--</ng-container>
+                                                <ng-container *ngIf="tnData?.isFreeTrial">{{tnData?.isFreeTrial}}</ng-container>
+                                              </li>
+                                              <li>
+                                                <ng-container *ngIf="tnData?.taughtLevel?.length==0">--</ng-container>
+                                                <ng-container *ngIf="tnData?.taughtLevel?.length>0">{{tnData?.taughtLevel?.join(', ')}}</ng-container>
+                                              </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-3 lesson_middle_PaddLR">
+                                <div class="lessonsMiddleLeft_Cover">
+                                    <div class="lessonsMiddleLeft_Title">{{'schedule' | translate }}</div>
+                                    <div class="lessonMiidleDurationCvoer">                                        
+                                        <ng-container *ngIf="hasScheduleData(tnData)">
+                                            <div class="lessonUl_Left3">
+                                                <ul>
+                                                    <!-- <li>All week days</li> -->
+                                                    <li *ngIf="tnData?.schedule?.sunday?.length">Sunday: &nbsp;</li>
+                                                    <li *ngIf="tnData?.schedule?.monday?.length">Monday: &nbsp;</li>
+                                                    <li *ngIf="tnData?.schedule?.tuesday?.length">Tuesday: &nbsp;</li>
+                                                    <li *ngIf="tnData?.schedule?.wednesday?.length">Wednesday: &nbsp;</li>
+                                                    <li *ngIf="tnData?.schedule?.thursday?.length">Thursday: &nbsp;</li>
+                                                    <li *ngIf="tnData?.schedule?.friday?.length">Friday: &nbsp;</li>
+                                                    <li *ngIf="tnData?.schedule?.saturday?.length">Saturday: &nbsp;</li>
+                                                </ul>
+                                            </div>
+                                            <div class="lessonUl_Right3">
+                                                <ul>
+                                                    <li *ngIf="tnData?.schedule?.sunday?.length">
+                                                        {{tnData?.schedule?.sunday | formatDaySchedule }}
+                                                    </li>
+                                                    <li *ngIf="tnData?.schedule?.monday?.length">
+                                                        {{tnData?.schedule?.monday | formatDaySchedule }}
+                                                    </li>
+                                                    <li *ngIf="tnData?.schedule?.tuesday?.length">
+                                                        {{tnData?.schedule?.tuesday | formatDaySchedule }}
+                                                    </li>
+                                                    <li *ngIf="tnData?.schedule?.wednesday?.length">
+                                                        {{tnData?.schedule?.wednesday | formatDaySchedule }}
+                                                    </li>
+                                                    <li *ngIf="tnData?.schedule?.thursday?.length">
+                                                        {{tnData?.schedule?.thursday | formatDaySchedule }}
+                                                    </li>
+                                                    <li *ngIf="tnData?.schedule?.friday?.length">
+                                                        {{tnData?.schedule?.friday | formatDaySchedule }}
+                                                    </li>
+                                                    <li *ngIf="tnData?.schedule?.saturday?.length">
+                                                        {{tnData?.schedule?.saturday | formatDaySchedule }}
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </ng-container>
+                                        <ng-container *ngIf="!hasScheduleData(tnData)">
+                                            <div class="col-md-12">{{'not_yet_decided' | translate}}</div>
+                                        </ng-container>
+                                    </div>
+                                </div>                                
+                            </div>
+                            <div class="col-xs-12 col-sm-12 col-md-5 lessons_middle_pddingRight">
+                                <div class="lessonsMiddleLeft_Cover">
+                                    <div class="lessonsMiddleLeft_Title">{{'fee_structure' | translate }}</div>
+                                    <div class="lessonMiidleDurationCvoer">
+                                        <div class="lessonUl_Left2">
+                                            <ul>
+                                                <li>{{'rate_per_hour' | translate }}</li>
+                                                <li>{{'additional_fee_per_session' | translate }}</li>
+                                                <li *ngIf="gridViewMode=='tm'">{{'provide_group_discount' | translate }}</li>
+                                                <li *ngIf="gridViewMode!='tm'">{{'user_provide_group_discount' | translate }}</li>
+                                                <li *ngIf="gridViewMode=='tm'">{{'do_you_want_additional_fees' | translate }}</li>
+                                                <li *ngIf="gridViewMode!='tm'">{{'user_do_you_want_additional_fees' | translate }}</li>
+                                                <li>{{'reason_for_additional_fees' | translate }}</li>
+                                            </ul>
+                                        </div>
+                                        <div class="lessonUl_Right2">
+                                            <ul>
+                                                  <li>
+                                                    <ng-container *ngIf="!tnData?.fees?.hourlyRate">$0.00</ng-container>
+                                                    <ng-container *ngIf="tnData?.fees?.hourlyRate">
+                                                      {{tnData?.fees?.hourlyRate | currency:'USD':true:'1.2'}}
+                                                    </ng-container>
+                                                  </li>
+                                                  <li>
+                                                    <ng-container *ngIf="!tnData?.fees?.extraFeeRate">$0.00</ng-container>
+                                                    <ng-container *ngIf="tnData?.fees?.extraFeeRate">
+                                                      {{tnData?.fees?.extraFeeRate | currency:'USD':true:'1.2'}}
+                                                    </ng-container>
+                                                  </li>
+                                                  <li>
+                                                    <ng-container *ngIf="!tnData?.fees?.isGroupDiscount">--</ng-container>
+                                                    <ng-container *ngIf="tnData?.fees?.isGroupDiscount">
+                                                      {{tnData?.fees?.isGroupDiscount}}
+                                                    </ng-container>                                                
+                                                  </li>
+                                                  <li>
+                                                      <ng-container *ngIf="tnData?.fees?.extraFee">{{tnData?.fees?.extraFee}}</ng-container>
+                                                      <ng-container *ngIf="!tnData?.fees?.extraFee">
+                                                        {{'no_reason_available' | translate}}
+                                                      </ng-container>
+                                                  </li>
+                                                  <li>
+                                                    <ng-container *ngIf="!tnData?.fees?.extraFeeReason">--</ng-container>
+                                                    <ng-container *ngIf="tnData?.fees?.extraFeeReason">
+                                                      {{tnData?.fees?.extraFeeReason}}
+                                                    </ng-container>                                                
+                                                  </li>
+                                            </ul>
+                                        </div>                                        
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                        <div style="clear: both;"></div>
+                        <div class="lessonTable_cover table-responsive">
+                            <app-fees #feesCom (save)="saveFeesDetail($event)" [data]="tnData" [parentComponent]="'createlesson'" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [feesEdit]="feesEdit" [gridViewMode]="gridViewMode" [isOngoingLesson]="'1'"></app-fees>
+                        </div>
+                        <div class="lessonTop_para_cover" id="policySection">
+                            <ng-container *ngIf="tnData?.policy">
+                                <div class="lessonTop_para_title">{{'lesson_policies' | translate }}</div>
+                                <div class="lessonTop_para_text" [innerHtml]="tnData?.policy | safeHtml"></div>  
+                            </ng-container>                          
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="talent-master-outer createtn" *ngIf="dataLoaded && isEditable">
+     <div class="talent-master-topouter talentnook-profile">
+        
+        <app-progressbar [stepsListStatus]="stepsListStatus" [showProgress]="showProgress" *ngIf="isEditable"></app-progressbar>
+
+        <div class="talent-master-btnouter fixHeader talentnook-bar" *ngIf="!isEditable && gridViewMode=='user'">
+           <div class="container">
+              <div *ngIf="!parentEnabled" class="requestbuttons">
+                <!-- <button class="btn contact-btn">{{'contact' | translate }} {{ user.name?.full | name:user.fname: user.lname: true }} </button> -->
+                <a class="btn btn-default" href="javascript:void(0);" (click)="commonService.contactTm(4,user)">
+                  {{'contact' | translate }} {{ user?.name?.full | name:user?.fname: user?.lname: true }}
+                </a>
+                <button class="btn btn-primary" (click)="commonService.iamInterested(tnData?._id)">{{'im_interested' | translate }}</button>
+              </div>
+
+              <div *ngIf="parentEnabled" class="requestbuttons">
+                <!-- <a href="javascript:void(0)" class="btn contact-btn" (click)="authService.openComingsoon()">{{'contact' | translate }} {{ user.name?.full | name:user.fname: user.lname: true }} </a> -->
+                <a href="javascript:void(0)" class="btn btn-primary" (click)="authService.openComingsoon()">{{'request_a_lesson' | translate }}</a>
+                <a class="btn btn-default" href="javascript:void(0);" (click)="commonService.contactTm(4,user)">
+                  {{'contact' | translate }} {{ user?.name?.full | name:user?.fname: user?.lname: true }}
+                </a>                
+              </div>
+           </div>
+        </div>
+
+        <div class="tn-profile-title-inner-container" [ngStyle]="{'background-image': getBackgroundImage()}">
+        <div class="tn-profile-title-inner">
+            <div class="container">
+                <!-- NORMAL TALENTNOOK CREATION -->
+                <div *ngIf="!isGrandfathering" class="tn-header-part">
+                    <div class="talentnook-profile-btmimg">
+                        <form [formGroup]="tnFormBanner" novalidate (ngSubmit)="saveBanner(tnFormBanner.value, tnFormBanner.valid, 'tnFormBanner')">
+                            <!-- <div [ngClass]="{'hide': bannerEdit, 'banner-container': true}">
+                                <i *ngIf="isEditable" class="fa fa-pencil-square-o add-editicon darkskyblue" (click)="bannerEdit=(bannerEdit)? false: true;"></i>
+                                <img class="img-responsive" [src]="getBannerImage()" (error)="onBannerImageError($event)" />
+                            </div> -->
+                            <div class="image-upload-container" style="display: none; " [ngClass]="{'show': bannerEdit}">
+                                <image-upload *ngIf="bannerEdit"
+                                    [max]="1"
+                                    [url]="bannerPath"
+                                    [headers]="[
+                                      {header: 'Authorization', value: authService.loadToken()}
+                                    ]"
+                                    [buttonCaption]="'Select Image for Banner'"
+                                    [dropBoxMessage]="'Drop your image here (1170x405)!'"
+                                    [extensions]="['jpg','png','jpeg']"
+                                    (onFileUploadFinish)="imageUploaded($event)"
+                                    (onRemove)="imageRemoved($event)"
+                                    (isPending)="disableSendButton($event)"
+                                ></image-upload>
+                                <div class="image-submit" *ngIf="!isSingleForm">
+                                  <button type="submit" class="btn btn-primary">{{'save' | translate}}</button>&nbsp; <button type="button" (click)="bannerEdit=false" class="btn btn-default">{{'cancel' | translate}}</button>
+                                </div>  
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="tn-header-left-part">
+                        <div class="map-rightpannal-imginner bluerating">
+                            <div class="rightrating-img" [innerHTML]="drawRating(tmInitialData.rate)"></div>
+                            <div class="middle-imginner">
+                                <div class="rightpannal-img-left"><img *ngIf="tmInitialData?.verifiedAddress" src="{{env.ADDDRESS_BADGE_IMAGE}}"></div>
+                                <div class="rightpannal-middleimg">
+                                    <div class="img-container">
+                                        <img class="img-responsive" [src]="commonService.getProfileImage(tmInitialData.profileImage,tmInitialData._id)" (error)="commonService.setDefaultProfileImage($event)" />
+                                        <!-- (click)="enableUpload()" [ngClass]="{'pointer':headlineEdit}" -->
+                                    </div>
+                                </div>
+                                <!-- <input type="file" style="display:none;" id="upload-browse" class="form-control" (change)="uplaodProfileImage($event)" #input> -->
+                                <div class="rightpannal-rightimg"><img *ngIf="tmInitialData?.verifiedBackground" src="{{env.BACKGROUND_BADGE_IMAGE}}"></div>
+                            </div>
+                        </div>
+                        <div class="tn-header-tnname">
+                            <h2>{{ tmInitialData?.name?.full | name:tmInitialData?.fname: tmInitialData?.lname }}</h2>
+                        </div>
+                    </div>
+
+                    <div class="tn-header-right-part" id="headlineSection">
+                        <div [ngClass]="{'hide': headlineEdit}" class=" headline-section">
+                            <div *ngIf="isEditable && !isSingleForm" class="change-bg"><span>{{'background_image' | translate}}</span><i class="fa fa-pencil-square-o add-editicon darkskyblue padding-left-8" (click)="bannerEdit=(bannerEdit)? false: true;"></i><i *ngIf="tnData.profileImage" class="fa fa-close add-editicon red" (click)="removeBackgroundImage()"></i></div>
+
+                            <h2>{{ tnData?.name || 'phol_lesson_name' | translate }}</h2>
+                            <p>{{ tnData?.headline || 'phol_lesson_headline' | translate }} <i *ngIf="isEditable && !isSingleForm" class="fa fa-pencil-square-o add-editicon darkskyblue padding-left-8" (click)="headlineEdit=(headlineEdit)? false: true;"></i></p>
+                        </div>
+
+                        <div style="display: none;" [ngClass]="{'show': headlineEdit}" class="headline-section" id="headlineSection">
+                            <form #headlineform="ngForm" [formGroup]="tnFormHeadline" novalidate (ngSubmit)="saveHeadline(tnFormHeadline.value, tnFormHeadline.valid, 'tnFormHeadline')">
+                                <div class="headline-input">
+                                  <input name="name" class="input align-center" formControlName="name" placeholder="{{'phol_lesson_name' | translate}}" />
+                                  <div class="headline align-center">
+                                    <p class="form-err-msg align-center" [hidden]="tnFormHeadline.controls.name.valid || !headlineSubmit">{{'err_valid_name' | translate}}</p>
+                                  </div>
+                                  <input name="headline" class="input align-center" formControlName="headline" placeholder="{{'phol_lesson_headline' | translate}}" />
+                                  <div class="headline align-center">
+                                    <p class="form-err-msg align-center" [hidden]="tnFormHeadline.controls.headline.valid || !headlineSubmit">{{'err_valid_headline' | translate}}</p>
+                                  </div>
+                                </div>
+                                <div class="" *ngIf="!isSingleForm">
+                                    <a href="javascript:void(0);" class="" title="{{'save' | translate}}" (click)="saveHeadline(tnFormHeadline.value, tnFormHeadline.valid, 'tnFormHeadline')"><i class="fa fa-floppy-o darkskyblue"></i></a>
+                                    <a href="javascript:void(0);" (click)="headlineEdit=false;" class="" title="{{'cancel' | translate}}"><i class="fa fa-times darkskyblue"></i></a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="headline-section-time" [ngClass]="{'reduce-marging': !tnFormHeadline.controls.headline.valid && headlineSubmit}">
+                            <div class="col-md-12 col-xs-12 col-sm-12 no-padding align-center">
+                                <i class="fa fa-clock-o"></i>{{ 'last_class_on' | translate }}: 
+                                <ng-container *ngIf="lessonData?.schedule?.start">{{lessonData?.schedule?.start | date: env.DATE_FORMAT}}</ng-container>
+                                <ng-container *ngIf="! lessonData?.schedule?.start">{{ 'yet_to_start' | translate }}</ng-container> 
+                                <div class="padding-left-15 inline-block" *ngIf="gridViewMode=='user' || !isEditable">
+                                    {{'available_slot' | translate}} : {{ tnData.availableSlot }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bottom-right-part" id="tntalentSection">
+                            <div class="talent">
+                                <div class="profile-talent" *ngIf="!talentEdit">
+                                    <span class="lbl">{{ 'talent' | translate }}</span>: <span class="value">{{ tnData?.talent }}</span>
+                                    <div class="add-edit">
+                                        <i *ngIf="isEditable && !isSingleForm" class="fa fa-pencil-square-o add-editicon darkdarkskyblue" (click)="talentEdit=(talentEdit)? false: true;"></i>
+                                    </div>
+                                </div> 
+                                <div class="profile-talent-form" *ngIf="talentEdit">
+                                    <form #talentform="ngForm" [formGroup]="tnFormTalent" novalidate (ngSubmit)="save(tnFormTalent.value, tnFormTalent.valid, 'tnFormTalent')">
+                                        <div>
+                                            <span class="lbl">{{ 'talent' | translate }}</span>:
+                                            <div class="inline-block">
+                                                <!-- <select formControlName="talent" class="selectbox">
+                                                    <option *ngFor="let talent of talentList" [value]="talent" [attr.selected]="talent ? '' : null">{{talent}}</option>
+                                                </select> -->
+                                                <select formControlName="talent" class="selectbox">
+                                                    <!-- <option *ngFor="let talent of talentList" [value]="talent" [attr.selected]="talent? '' : null">{{talent}}</option> -->
+                                                    <option *ngFor="let talent of talentList" [value]="talent">{{talent}}</option>
+                                                    <!-- <option *ngFor="let talent of talentList">{{talent}}</option> -->
+                                                </select>
+                                            </div>
+                                            <!-- <p class="form-err-msg " [hidden]="tnFormTalent.controls.talent.valid || (tnFormTalent.controls.talent.untouched)">{{'err_talent_required' | translate}}</p> -->
+                                            <p class="form-err-msg " [hidden]="tnFormTalent.controls.talent.valid">{{'err_talent_required' | translate}}</p>
+                                        </div>
+                                        <div class="tn-talent-submit" *ngIf="!isSingleForm">
+                                          <a href="javascript:void(0);" class="" title="{{'save' | translate}}" (click)="save(tnFormTalent.value, tnFormTalent.valid, 'tnFormTalent')"><i class="fa fa-floppy-o darkskyblue"></i></a>
+                                          <a href="javascript:void(0);" (click)="talentEdit=false" class="" title="{{'cancel' | translate}}"><i class="fa fa-times darkskyblue"></i></a>
+                                        </div>  
+                                    </form>
+                                </div> 
+                            </div>
+
+                            <div class="address">
+                                <div class="talentnook-profile-top">
+                                    <p title="{{ tmInitialData?.address | address:'full' }}"><i class="fa fa-map-marker"></i> {{ {address: tmInitialData?.address, unitno: tmInitialData?.unitno } | address:'full' }} </p>
+                                </div>
+                            </div>
+
+                            <div class="hostedby" >
+                                <div class="talentnook-profile-hostby" *ngIf="!hostData">
+                                    <div class="tnook-profilehost">{{ 'hosted_by' | translate }}:</div><span class="smallfont">{{'not_yet_decided' | translate}}</span>
+                                </div>
+                                <div class="talentnook-profile-hostby" *ngIf="hostData">
+                                    <div class="tnook-profilehost-profile img-container">
+                                        <img class="img-responsive" [src]="commonService.getProfileImage(hostData?.profileImage,hostData?._id)" (error)="commonService.setDefaultProfileImage($event)">
+                                    </div>
+                                    <div class="tnook-profilehost-pname" title="{{ hostData?.name?.full }}">{{ hostData?.name?.full | name:hostData?.fname: hostData?.lname }}</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GRANDFATHERING TALENTNOOK CREATION -->
+                <div *ngIf="isGrandfathering" class="tn-header-part">
+                    <div class="tn-header-left-part">
+                        <div class="map-rightpannal-imginner bluerating">
+                            <div class="rightrating-img" [innerHTML]="drawRating(tmInitialData.rate)"></div>
+                            <div class="middle-imginner">
+                                <div class="rightpannal-img-left"><img *ngIf="tmInitialData?.verifiedAddress" src="{{env.ADDDRESS_BADGE_IMAGE}}"></div>
+                                <div class="rightpannal-middleimg">
+                                    <div class="img-container">
+                                        <img class="img-responsive" [src]="commonService.getProfileImage(tmInitialData.profileImage,tmInitialData._id)" (error)="commonService.setDefaultProfileImage($event)" />
+                                        <!-- (click)="enableUpload()" [ngClass]="{'pointer':headlineEdit}" -->
+                                    </div>
+                                </div>
+                                <!-- <input type="file" style="display:none;" id="upload-browse" class="form-control" (change)="uplaodProfileImage($event)" #input> -->
+                                <div class="rightpannal-rightimg"><img *ngIf="tmInitialData?.verifiedBackground" src="{{env.BACKGROUND_BADGE_IMAGE}}"></div>
+                            </div>
+                        </div>
+                        <div class="tn-header-tnname">
+                            <h2>{{ tmInitialData?.name?.full | name:tmInitialData?.fname: tmInitialData?.lname }}</h2>
+                        </div>
+                    </div>
+
+                    <div class="tn-header-right-part" id="headlineSection">
+                        <div [ngClass]="{'hide': headlineEdit}" class=" headline-section">
+                            <div *ngIf="isEditable && !isSingleForm" class="change-bg"><span>{{'background_image' | translate}}</span><i class="fa fa-pencil-square-o add-editicon darkskyblue padding-left-8" (click)="bannerEdit=(bannerEdit)? false: true;"></i><i *ngIf="tnData.profileImage" class="fa fa-close add-editicon red" (click)="removeBackgroundImage()"></i></div>
+
+                            <h2>{{ tnData?.name || 'phol_lesson_name' | translate }}</h2>
+                            <p>{{ tnData?.headline || 'phol_lesson_headline' | translate }} <i *ngIf="isEditable && !isSingleForm" class="fa fa-pencil-square-o add-editicon darkskyblue padding-left-8" (click)="headlineEdit=(headlineEdit)? false: true;"></i></p>
+                        </div>
+
+                        <div style="display: none;" [ngClass]="{'show': headlineEdit}" class="headline-section">
+                            <form #headlineform="ngForm" [formGroup]="tnFormHeadline" novalidate (ngSubmit)="saveHeadline(tnFormHeadline.value, tnFormHeadline.valid, 'tnFormHeadline')">
+                                <div class="headline-input">
+                                  <input name="name" class="input align-center" formControlName="name" placeholder="{{'phol_lesson_name' | translate}}" />
+                                  <div class="headline align-center">
+                                    <p class="form-err-msg align-center" [hidden]="tnFormHeadline.controls.name.valid || !headlineSubmit">{{'err_valid_name' | translate}}</p>
+                                  </div>
+                                  <input name="headline" class="input align-center" formControlName="headline" placeholder="{{'phol_lesson_headline' | translate}}" />
+                                  <div class="headline align-center">
+                                    <p class="form-err-msg align-center" [hidden]="tnFormHeadline.controls.headline.valid || !headlineSubmit">{{'err_valid_headline' | translate}}</p>
+                                  </div>
+                                </div>
+                                <div class="" *ngIf="!isSingleForm">
+                                    <!-- <button type="submit" class="btn default-button skyblue submit">{{'save' | translate}}</button>&nbsp; <button type="button" (click)="headlineEdit=false" class="btn default-button blue cancel">{{'cancel' | translate}}</button> -->
+                                    <a href="javascript:void(0);" class="" title="{{'save' | translate}}" (click)="saveHeadline(tnFormHeadline.value, tnFormHeadline.valid, 'tnFormHeadline')"><i class="fa fa-floppy-o darkskyblue"></i></a>
+                                    <a href="javascript:void(0);" (click)="headlineEdit=false;" class="" title="{{'cancel' | translate}}"><i class="fa fa-times darkskyblue"></i></a>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="headline-section-time" [ngClass]="{'reduce-marging': !tnFormHeadline.controls.headline.valid && headlineSubmit}">
+                            <p>
+                                <!-- TODO: NEED TO MAKE THIS DYNAMIC -->
+                                <i class="fa fa-clock-o"></i>
+                                <ng-container *ngIf="!lessonData?.schedule?.start">{{ 'yet_to_start' | translate }}</ng-container>
+                                <ng-container *ngIf="commonService.isFutureLesson(lessonData?.schedule?.start)">
+                                    {{ 'starting_on' | translate }}: {{lessonData?.schedule?.start | date: env.DATE_FORMAT}}
+                                </ng-container>
+                                <ng-container *ngIf="lessonData?.schedule?.start && !commonService.isFutureLesson(lessonData?.schedule?.start)">
+                                    {{ 'last_class_on' | translate }}: {{lessonData?.schedule?.start | date: env.DATE_FORMAT}}
+                                </ng-container>
+                             </p>
+                        </div>
+
+                        <div class="bottom-right-part">
+                            <div class="talent gftalent">
+                                <div class="profile-talent" *ngIf="!talentEdit">
+                                    <span class="lbl">{{ 'talent' | translate }}</span>: <span class="value">{{ tnData?.talent }}</span>
+                                    <div class="add-edit">
+                                        <i *ngIf="isEditable && !isSingleForm" class="fa fa-pencil-square-o add-editicon darkdarkskyblue" (click)="talentEdit=(talentEdit)? false: true;"></i>
+                                    </div>
+                                </div> 
+                                <div class="profile-talent-form" *ngIf="talentEdit">
+                                    <form #talentform="ngForm" [formGroup]="tnFormTalent" novalidate (ngSubmit)="save(tnFormTalent.value, tnFormTalent.valid, 'tnFormTalent')">
+                                        <div>
+                                            <span class="lbl">{{ 'talent' | translate }}</span>:
+                                            <div class="inline-block">
+                                                <select formControlName="talent" class="selectbox">
+                                                    <!-- <option *ngFor="let talent of talentList" [value]="talent" [attr.selected]="talent? '' : null">{{talent}}</option> -->
+                                                    <!-- <option *ngFor="let talent of talentList" [value]="talent">{{talent}}</option> -->
+                                                    <option *ngFor="let talent of talentList">{{talent}}</option>
+                                                </select>
+                                            </div>
+                                            <p class="form-err-msg " [hidden]="tnFormTalent.controls.talent.valid || (tnFormTalent.controls.talent.untouched)">{{'err_talent_required' | translate}}</p>
+                                        </div>
+                                        <div class="tn-talent-submit" *ngIf="!isSingleForm">
+                                          <!-- <button type="submit" class="btn default-button skyblue submit">{{'save' | translate}}</button>&nbsp; <button type="button" (click)="talentEdit=false" class="btn default-button blue cancel">{{'cancel' | translate}}</button> -->
+                                          <a href="javascript:void(0);" class="" title="{{'save' | translate}}" (click)="save(tnFormTalent.value, tnFormTalent.valid, 'tnFormTalent')"><i class="fa fa-floppy-o darkskyblue"></i></a>
+                                          <a href="javascript:void(0);" (click)="talentEdit=false" class="" title="{{'cancel' | translate}}"><i class="fa fa-times darkskyblue"></i></a>
+                                        </div>  
+                                    </form>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- GRANDFATHERING TALENTNOOK CREATION FINISH -->
+
+            </div>
+        </div>   
+        </div>   
+        <div style="clear: both;"></div>
+     </div>
+
+    <div class="mypolicies-section" *ngIf="dataLoaded">
+        <div class="container" id="policySection">
+            <app-outline #lessonOutlineCom (save)="saveLessonOutlineDetail($event)" [data]="tnData" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [lessonOutlineEdit]="lessonOutlineEdit" [parentComponent]="'tncreate'"></app-outline>
+        </div>
+    </div>
+
+    <div class="fee-structure-outer">
+        <div class="container">
+            <app-lessondetail #lessondetailCom (save)="saveLessonDetail($event)" [data]="tnData" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [lessonDetailEdit]="lessonDetailEdit" [parentComponent]="'tncreate'"></app-lessondetail>
+            
+            <app-schedule #scheduleCom (save)="saveScheduleDetail($event)" [data]="tnData" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [scheduleEdit]="scheduleEdit"></app-schedule>      
+        </div>
+    </div>
+
+    <div class="fees-structure-outer" id="feesSection">
+        <div class="container">
+            <app-fees #feesCom (save)="saveFeesDetail($event)" [data]="tnData" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [feesEdit]="feesEdit" [gridViewMode]="gridViewMode"></app-fees>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="photondvideos-section" *ngIf="user">
+    <div class="container">
+        <app-media (save)="saveMediaDetail($event)" [objectId]="user?.tm?.tempTnId" [modelType]='modelType'  [isEditable]="isEditable" [embedEdit]="embedEdit"></app-media>
+    </div>
+</div> -->
+
+<div class="mypolicies-section" *ngIf="dataLoaded && isEditable">
+    <div class="container" id="policySection">
+        <app-policy #policyCom (save)="savePolicyDetail($event)" [data]="tnData" [isEditable]="isEditable" [isSingleForm]="isSingleForm" [policyEdit]="policyEdit" [parentComponent]="'tncreate'"></app-policy>
+    </div>
+</div>
+
+<div class="talent-master-btnouter-bottom " *ngIf="(isEditable && isSingleForm)">
+    <div class="container">
+        <!-- <div class="savebuttons"> -->
+        <div class="savebuttons">
+            <!-- <button type="button" class="btn default-button skyblue submit no-margin" (click)="saveIncomplete()">{{'save_incomplete' | translate}}</button> &nbsp; <button type="button" (click)="saveComplete()" class="btn default-button skyblue submit no-margin">{{'save_and_publish' | translate}}</button> &nbsp; <button type="button" (click)="cancelEditing()" class="btn default-button blue cancel no-margin">{{'cancel' | translate}}</button> -->
+
+            <button type="button" class="btn btn-primary" (click)="saveIncomplete()">{{ 'save_and_finish_later' | translate }}</button>&nbsp;
+            <button *ngIf="!isGrandfathering" type="button" class="btn btn-primary" (click)="saveComplete()">{{ 'launch' | translate }}</button>&nbsp;
+            <button *ngIf="isGrandfathering" type="button" class="btn btn-primary" (click)="saveAndLaunch()">{{ 'invite_students' | translate }}</button>&nbsp;
+            <button type="button" class="btn btn-default" (click)="cancelEditing()">{{ 'cancel' | translate }}</button>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="container" align="center" *ngIf="isEditable">
+    <div *ngIf="!tmInitialData?.tm?.editId">
+        <button type="button" class="btn default-button skyblue submit" (click)="doneFinalChanges()">{{ 'launch' | translate }}</button>&nbsp;
+        <button type="button" class="btn default-button skyblue submit" (click)="launchLaterTnChanges()">{{ 'cancel' | translate }}</button>&nbsp;
+        <button type="button" class="btn default-button skyblue submit" (click)="cancelTnChanges()">{{ 'save_and_finish_later' | translate }}</button>
+    </div>
+    <div *ngIf="tmInitialData?.tm?.editId">
+        <button type="button" class="btn default-button skyblue submit" routerLink="/mylessons">{{ 'cancel' | translate }}</button>
+    </div>
+</div> -->
+
+<!-- FOR CONFIRMATION OF DELETE -->
+<app-confirmbox (confirmOutput)="confirmOutput($event)" [title]="confirmTitle" [content]="confirmContent" [showConfirm]="showConfirm"></app-confirmbox>
+
+<!-- Modal message alert -->
+<div class="modal fade common-modal" id="alert-pop" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel">
+  <div class="modal-dialog" role="document">
+    <!-- Modal content--> 
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="alertModalLabel">{{ "alert_tnprofile_title" | translate }}</h4>
+        </div>
+        <div class="modal-body">
+            <div class="invite-a-friend-msg">
+              {{ "alert_tnprofile_complete" | translate }} 
+            </div>
+            <div class="invite-a-friend-msg align-left">
+                <ng-container *ngFor="let compo of buggyComponent; index as i">
+                    <div class="clearboth">{{i+1}}.
+                        <span *ngIf="compo=='headlineSection'">{{'tnname_headline_decided' | translate}}</span>
+                        <span *ngIf="compo=='talentCom'">{{'tn_talent_decided' | translate}}</span>
+                        <span *ngIf="compo=='lessondetailCom'">{{'sesson_details' | translate}}</span>
+                        <span *ngIf="compo=='scheduleCom'">{{'schedule_decided' | translate}}</span>
+                        <span *ngIf="compo=='feesCom'">{{'fee_structure' | translate}}</span>
+                    </div>
+                </ng-container>
+            </div>
+        </div>
+
+    </div>
+  </div>
+</div>
+<!-- Modal message alert-->
+
+<!-- Modal launch warning -->
+<div class="modal fade common-modal" id="launch-info-pop" tabindex="-1" role="dialog" aria-labelledby="alertModalLabel">
+  <div class="modal-dialog" role="document">
+    <!-- Modal content--> 
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="alertModalLabel">{{ "alert_tnprofile_title" | translate }}</h4>
+        </div>
+        <div class="modal-body">
+            <div class="invite-a-friend-msg">
+                {{ "launch_tnprofile_info" | translate }}
+            </div>        
+            <div class="invite-a-friend-buttons">
+                {{ "talentnook_thanks" | translate }} 
+                {{ "talentnook_team" | translate }} 
+            </div>
+        </div>
+
+    </div>
+  </div>
+</div>
+<!-- Modal launch warning -->

@@ -1,0 +1,331 @@
+<app-inlinepopup #lesson_inline_popup *ngIf="inlinePopupEnabled" [relativeTo]="'#lessons-container'" [event]="triggeringPoint" (onHide)="onHide($event)" position="bottom-left">
+	<!--  *ngIf="inlinePopupEnabled" -->
+	<ng-container>
+		<div class="add-notes-container" *ngIf="inlineViewMode=='addnote'">
+			<form #form="ngForm" [formGroup]="tnFormNote" novalidate (ngSubmit)="saveNote(tnFormNote.value, tnFormNote.valid, 'tnFormNote')">
+				<div class="col-md-8 col-sm-8 col-xs-8 no-padding">
+					<!-- <span>{{'add_note' | translate}}</span> -->
+					<input formControlName="note" placeholder="{{'Note...' | translate}}" class="form-control width-95-percent">
+					<input formControlName="_id" type="hidden" class="default-input">
+                	<p class="form-err-msg yellow" [hidden]="tnFormNote.controls.note.valid || (!saveNoteSubmit)">{{'err_valid_note' | translate}}</p>
+				</div>
+				<div class="col-md-4 col-sm-4 col-xs-4 no-padding align-right">
+	              	<button type="submit" class="btn btn-primary">{{'save' | translate}}</button>
+	              	<a (click)="inlinePopupEnabled=false;" class="btn btn-default padding-lr-6" href="javascript:void(0);">{{'cancel' | translate}}</a>
+				</div>
+            </form>
+		</div>
+
+		<div class="view-notes-container" *ngIf="inlineViewMode=='listnote'">
+			<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+				<div *ngIf="! (noteList?.length > 0)">{{'no_note_found' | translate}}</div>
+				<ul *ngIf="noteList?.length > 0">
+					<li *ngFor="let notes of noteList; index as i">
+						{{notes.note}}
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<!-- [ngClass]="{'show': showLessonForm, 'hide': !showLessonForm}" -->
+		<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="inlineViewMode=='addlesson'" >
+			<form #form="ngForm" [formGroup]="tnFormLessonSchedule" novalidate (ngSubmit)="saveLesson(tnFormLessonSchedule.value, tnFormLessonSchedule.valid, 'tnFormLessonSchedule')" *ngIf="showLessonForm">
+				<div class="col-md-12 col-sm-12 col-xs-12 no-padding add-lesson-popup">
+					<!-- <input formControlName="date" [(ngModel)]='date' ng2-datetime-picker date-only="true"  placeholder="{{'start_date' | translate }}" class="form-control lesson-date inline-block equal-width-date">
+					<input formControlName="startTime" [(ngModel)]='startTime' type="time" placeholder="{{'start_date' | translate }}" class="form-control inline-block equal-width">
+					<input formControlName="endTime" [(ngModel)]='endTime' type="time" placeholder="{{'end_date' | translate }}" class="form-control inline-block equal-width"> -->
+
+					<input formControlName="date" 
+							a2e-datetimepicker
+                          	[options]="a2eOptionsdate" 
+                          	readonly="readonly" 
+                          	placeholder="{{'start_date' | translate }}" type="text" class="form-control lesson-date inline-block equal-width-date">
+					<input formControlName="startTime" 
+							a2e-datetimepicker
+                          	[options]="a2eOptionsTime" 
+                          	readonly="readonly" 
+							placeholder="{{'hh:mm AM' | translate }}" type="text" class="form-control inline-block equal-width">
+					<input formControlName="endTime" 
+							a2e-datetimepicker
+                          	[options]="a2eOptionsTime" 
+                          	readonly="readonly" 
+							placeholder="{{'hh:mm PM' | translate }}" type="text" class="form-control inline-block equal-width">
+				</div>
+				<div class="col-md-12 col-sm-12 col-xs-12 no-padding padding-top-15">
+					<div class="col-md-7 col-sm-6 col-xs-6 no-padding">
+						<p class="form-err-msg yellow" [hidden]="tnFormLessonSchedule.valid || (!saveLessonSumitted)">{{'err_valid_lessonschedule' | translate}}</p>
+					</div>
+					<div class="col-md-5 col-sm-6 col-xs-6 align-right no-padding">
+		              	<button type="submit" class="btn btn-primary">{{'save' | translate}}</button> &nbsp; 
+		              	<a (click)="showLessonForm=false;" class="btn btn-default" href="javascript:void(0);">{{'cancel' | translate}}</a>
+					</div>
+				</div>
+            </form>
+		</div>
+
+		<div class="col-md-12 col-sm-12 col-xs-12 no-padding" *ngIf="inlineViewMode=='cancelLesson'">
+			<div class="drop-request-container">
+				<div class="drop-popup-contact">
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding" style="padding: 6px 0px;">
+						<!-- {{cancelConfirmMessage}} -->
+						{{'cancel_session_confirmmsg' | translate}}
+					</div>
+				</div>
+				<div class="drop-popup-contact">
+					<div class="col-md-7 col-sm-6 col-xs-6 no-padding" style="padding: 6px 0px;">
+					</div>
+					<div class="col-md-5 col-sm-6 col-xs-6 align-right no-padding">
+						<a class="btn btn-primary" (click)="completeCancelConfirm(true)" href="javascript:void(0);">{{'yes' | translate}}</a>
+						<a class="btn btn-default" (click)="completeCancelConfirm(false)" href="javascript:void(0);">{{'no' | translate}}</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ng-container>
+</app-inlinepopup>
+
+<!-- FOR LESSON PAGE -->
+<ng-container *ngIf="parentComponent!='operations'">
+	<div class="talent-master-outer">
+	   <app-tnheader [talentNookId]="talentNookId" [isJoinRequest]="false" [parentComponent]="parentComponent"></app-tnheader>
+	</div>
+	<div class="launch-lesson-outer lavender-background">
+	    <div class="container">
+			<!--  TODO: NEED TO UPDATE THIS SECTION FROM BELOW SECTION -->
+			<div class="row">
+				<div class="col-md-12 col-sm-12 col-xs-12">
+
+					<div class="cta-bar-heading col-md-12 col-sm-12 col-xs-12">
+						<div class="col-md-6 col-sm-2 col-xs-2 no-padding">
+							<div><h4 class="tmheading-black">{{'all_lessons' | translate }} </h4></div>
+						</div>
+					</div>
+					
+					<div class="cta-bar request-bar-container no-padding col-md-12 col-sm-12 col-xs-12">
+						<ng-container>
+							<div class="parent-list-filters col-xs-12 col-sm-12 col-md-12 remove-margin-xs">
+								<form [formGroup]="requestStatusForm" novalidate (ngSubmit)="refreshList()">
+									<ng-container formArrayName="statusBoxes">
+										<div class="circle-box lightblue_white" [formGroupName]="'0'">
+											<label class="lightblue_white_checkox">
+											    <input type="checkbox" formControlName="isSelected" (click)="updateFilterStatus($event,'show_all')" />
+											    <span class="chekboximg"></span>
+											    <span class="label-content">{{'show_all' | translate}}</span>
+											</label>
+										</div>										
+										<div class="circle-box lightblue_white" [formGroupName]="'1'">
+											<label class="lightblue_white_checkox">
+											    <input type="checkbox" formControlName="isSelected" (click)="updateFilterStatus($event,'futurelesson')" />
+											    <span class="chekboximg"></span>
+											    <span class="label-content">{{'upcoming' | translate}}</span>
+											</label>
+										</div>
+										<div class="circle-box lightblue_white" [formGroupName]="'5'">
+											<label class="lightblue_white_checkox">
+											    <input type="checkbox" formControlName="isSelected" (click)="updateFilterStatus($event,'done')" />
+											    <span class="chekboximg"></span>
+											    <span class="label-content">{{ talentMaster?.fname }} {{'to_confirm' | translate}}</span>
+											</label>
+										</div>
+										<!-- NOW SCHEDULE AND UPCOMING MERGED AND WILL BE APPEAR AS UPCOMING -->
+										<!-- <div class="circle-box lightblue_white" [formGroupName]="'2'">
+											<label class="lightblue_white_checkox">
+											    <input type="checkbox" formControlName="isSelected" (click)="updateFilterStatus($event,'scheduled')" />
+											    <span class="chekboximg"></span>
+											    <span class="label-content">{{'scheduled' | translate}}</span>
+											</label>
+										</div> -->
+										<div class="circle-box lightblue_white" [formGroupName]="'3'">
+											<label class="lightblue_white_checkox">
+											    <input type="checkbox" formControlName="isSelected" (click)="updateFilterStatus($event,'cancelled')" />
+											    <span class="chekboximg"></span>
+											    <span class="label-content">{{'cancelled' | translate}}</span>
+											</label>
+										</div>
+										<div class="circle-box lightblue_white" [formGroupName]="'4'">
+											<label class="lightblue_white_checkox">
+											    <input type="checkbox" formControlName="isSelected" (click)="updateFilterStatus($event,'completed')" />
+											    <span class="chekboximg"></span>
+											    <span class="label-content">{{'completed' | translate}}</span>
+											</label>
+										</div>										
+									</ng-container>
+								</form>
+							</div>
+						</ng-container>
+
+						<div class="bottom-fees-container" >
+							<div class="no-lesson-found" *ngIf="(lessonDataList?.length<=0)">{{'no_lessons_have_been_scheduled_yet' | translate }}</div>
+			            	<table class="desktop-grid lesson-grid" *ngIf="lessonDataList">
+								<tbody>
+			                		<tr *ngFor="let lessson of lessonDataList | paginate: { itemsPerPage: 10, currentPage: p }">
+			                			<!-- As per rajeev feedback we don't need lesson numbers -->
+										<!-- <td class="serial-column">
+											<span class="datavalue column-title">{{'no.' | translate }}</span>
+											<span class="datavalue">{{lessson.sno}}</span>
+										</td> -->
+										<td class="date-column">
+											<span class="datavalue column-title">{{'date' | translate }}</span>
+											<span class="datavalue fontweightbold">{{ lessson?.schedule?.start | date:env.DATE_FORMAT }} {{ lessson?.schedule?.start | date:env.TIME_FORMAT }}</span>
+										</td>
+										<td class="students-column">
+											<span class="datavalue column-title">{{"students" | translate}}</span>
+											<ng-container *ngFor="let request of lessson?.students; index as i">
+												<div class="student-container" *ngIf="request?.student">
+													<span class="datavalue student-name">{{request?.student?.fname}}</span>
+												</div>
+											</ng-container>
+										</td>
+										<td class="status-column">
+											<ng-container>
+												<span class="datavalue column-title">{{"status" | translate}}</span>
+												
+												<span class="datavalue fontweightbold status_{{lessson?.status?.toLowerCase()}}" *ngIf="lessson?.status=='DONE'">{{ talentMaster?.fname }} {{'to_confirm' | translate}}</span>
+
+												<!-- NOW SCHEDULE AND UPCOMING MERGED AND WILL BE APPEAR AS UPCOMING -->
+												<span class="datavalue fontweightbold status_{{lessson?.status?.toLowerCase()}}" *ngIf="lessson?.status=='SCHEDULED'">{{'upcoming' | translate}}</span>
+
+												<span class="datavalue fontweightbold status_{{lessson?.status?.toLowerCase()}}" *ngIf="lessson?.status=='COMPLETED'">{{'completed' | translate}}</span>
+
+												<span class="datavalue fontweightbold status_{{lessson?.status?.toLowerCase()}}" *ngIf="lessson?.status=='CANCELLED'">{{'canceled' | translate}}</span>
+
+												<span class="datavalue fontweightbold status_{{lessson?.status?.toLowerCase()}}" *ngIf="lessson?.status=='FUTURELESSON'">{{'upcoming' | translate}}</span>
+											</ng-container>
+										</td>
+										<td class="shownote-column" *ngIf="userViewMode=='TM'">
+											<span class="datavalue column-title">{{'notes' | translate }}</span>
+											<span class="datavalue">
+											<a href="javascript:void(0);" class="show-note fontweightbold" (click)="showNote($event,'shownote',lessson?.tmNotes)" *ngIf="(lessson?.tmNotes?.length>0)">
+												{{'show' | translate }}
+											</a>
+											<a href="javascript:void(0)" *ngIf="(lessson?.tmNotes?.length<=0)">--</a>
+											</span>
+										</td>
+									</tr>
+								</tbody>								
+							</table>
+							<div class="pagination-div pull-right" *ngIf="lessonDataList">
+								<pagination-controls class="grid-pagination" (pageChange)="p = $event" autoHide="true" *ngIf="lessonDataList"></pagination-controls>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+</ng-container>
+
+<!-- FOR OPERATION PAGE -->
+<ng-container *ngIf="parentComponent=='operations'">
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+
+			<div class="cta-bar-heading col-md-12 col-sm-12 col-xs-12">
+				<div class="col-md-6 col-sm-2 col-xs-2 no-padding">
+					<div><h4 class="tmheading-black">{{'sessions' | translate }} </h4></div>
+				</div>
+				<div class="col-md-6 col-sm-10 col-xs-10 no-padding float-text-right" id="add-lesson">
+					<ng-container *ngIf="parentComponent=='operations' && userViewMode=='TM'">
+						<a routerLink="/lesson/sessions/{{objectData?._id}}" class="btn btn-primary">{{'view_all' | translate}}</a>
+						<input type="button" *ngIf="isEditable" (click)="addLesson($event)" value="{{'add_session' | translate}}" class="btn btn-default">
+					</ng-container>
+				</div>
+			</div>
+
+			<div class="cta-bar request-bar-container no-padding col-md-12 col-sm-12 col-xs-12">
+				<div class="bottom-fees-container" >
+					<div class="no-lesson-found" *ngIf="!lessonData"></div>
+	            	<table class="desktop-grid lesson-grid" *ngIf="lessonData">
+	              		<thead>
+	                		<tr>
+	                			<!-- As per rajeev feedback we don't need lesson numbers -->
+								<!-- <th class="col-sno">{{'no.' | translate }}</th> -->
+								<th class="col-datetime">{{'date/time' | translate }}</th>
+								<th class="col-students">{{'students' | translate }}</th>
+								<th class="col-action" *ngIf="userViewMode=='TM'">{{'action' | translate }}</th>
+								<th class="col-action" *ngIf="userViewMode!='TM'">{{'status' | translate }}</th>
+								<th class="col-notes" *ngIf="userViewMode=='TM' && isEditable">{{'notes' | translate }}</th>
+							</tr>
+						</thead>
+						<tbody>
+	                		<tr *ngFor="let lessson of lessonData; index as i">
+	                			<!-- As per rajeev feedback we don't need lesson numbers -->
+								<!-- <td>{{lessson.sno}}</td> -->
+								<td>{{showLessonDate(lessson.schedule.start)}}</td>
+								<td style="text-align: left;">
+									<ng-container *ngFor="let request of lessson?.students; index as i">
+										<div class="student-container" *ngIf="request?.student">
+											<label>
+												<ng-container *ngIf="(lessson?.status!='SCHEDULED' && lessson?.status!='DONE') || !isEditable">
+													<div class="check-box blue">
+									                    <label class="blue_checkox">
+									                        <input type="checkbox" readonly="readonly" disabled="disabled" [checked]="request?.isJoined" name="students_{{lessson?._id}}" value="{{request?.requestId}}">
+									                        <span class="chekboximg small"></span>
+									                        <div class="lebel-text">{{request?.student?.fname}}</div>
+									                    </label>
+									                </div>
+													<!-- <input type="checkbox" readonly="readonly" disabled="disabled" [checked]="request?.isJoined" name="students_{{lessson?._id}}" value="{{request?.requestId}}"> -->
+												</ng-container>
+												<ng-container *ngIf="(lessson?.status=='SCHEDULED' || lessson?.status=='DONE') && isEditable">
+													<div class="check-box blue">
+									                    <label class="blue_checkox">
+									                        <input type="checkbox" checked="checked" name="students_{{lessson?._id}}" value="{{request?.requestId}}">
+									                        <span class="chekboximg small"></span>
+									                        <div class="lebel-text">{{request?.student?.fname}}</div>
+									                    </label>
+									                </div>
+													<!-- <input type="checkbox" checked="checked" name="students_{{lessson?._id}}" value="{{request?.requestId}}"> -->
+												</ng-container>
+												<!-- <span>{{request?.student?.fname}}</span> -->
+											</label>
+										</div>
+									</ng-container>
+								</td>
+								<td class="align-center">
+									<ng-container *ngIf="(lessson?.status!='SCHEDULED' && lessson?.status!='DONE') || userViewMode!='TM' || !isEditable">
+										<span class="status_{{lessson?.status?.toLowerCase()}}">{{ lessson?.status }}</span>
+									</ng-container>
+									<ng-container *ngIf="(lessson?.status=='SCHEDULED' || lessson?.status=='DONE') && userViewMode=='TM' && isEditable">
+										<a href="javascript:void(0)" class="mark_complete" (click)="updateStatus($event, 'mark_as_complete', lessson?._id)"><i class="fa fa-check-circle"></i>{{'complete' | translate}}</a>
+										<a href="javascript:void(0)" class="mark_cancle" (click)="updateStatus($event, 'cancel', lessson?._id)"><i class="fa fa-close"></i>{{'cancel' | translate}}</a>
+									</ng-container>
+								</td>
+								<td *ngIf="userViewMode=='TM' && isEditable">
+									{{'note' | translate }}
+									<a href="javascript:void(0);" class="add_note" (click)="addNote($event,lessson?._id)">
+										<!-- {{'add_note' | translate }} -->
+										<i class="fa fa-plus-circle" aria-hidden="true"></i>
+									</a>
+									<a href="javascript:void(0);" class="add_note" (click)="showNote($event,'shownote',lessson?.tmNotes)" *ngIf="(lessson?.tmNotes?.length>0)">
+										<!-- {{'show_notes' | translate }} -->
+										<i class="fa fa-eye" aria-hidden="true"></i>
+									</a>
+								</td>
+							</tr>
+							<tr *ngIf="!lessonData || !(lessonData?.length>0)"><td class="align-center" colspan="5">{{'no_lessons_have_been_scheduled_yet' | translate}}</td></tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</ng-container>
+
+<!-- Modal parent search talentpopup -->
+<div class="modal fade common-modal" id="student-error-popup" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <!-- Modal content--> 
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="alertModalLabel">{{ "no_active_student" | translate }}</h4>
+      </div>
+      <div class="modal-body">
+        {{ "sorry_there_is_no_active_student_to_add_session" | translate }} 
+      </div>    
+    </div>
+  </div>
+</div>
+<!-- Modal parent search taletnpopup -->

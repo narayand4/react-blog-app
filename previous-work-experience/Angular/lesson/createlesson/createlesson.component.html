@@ -1,0 +1,18 @@
+<div class="createlesson-container container-fluid no-padding">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="col-md-12 col-sm-12 col-xs-12 no-padding breadcrumb-container">
+					<div class="col-md-6 col-sm-7 col-xs-12 no-padding">
+						<app-breadcrumb [parentComponent]="'createLesson'" [breadcrumbData]="breadcrumbData"></app-breadcrumb>
+					</div>
+				</div>
+				<div class="col-md-12 col-sm-12 col-xs-12 no-padding createlesson-form-container">
+					<div class="col-md-12 col-sm-12 col-xs-12 no-padding">
+						<app-talentdetails #talentdetails [parentComponent]="'createLesson'" [isGrandfathering]="isGrandfathering" [currentStep]="'1'" (nextPreviousStep)="nextPreviousAction($event)" [user]="user" [talentMode]="'EDITDETAIL'"></app-talentdetails>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,56 @@
+<div class="container">
+	<div class="row">
+   		<div class="col-md-12 col-sm-12 col-xs-12">
+	   		<div class="col-md-6 col-sm-8 col-xs-8 no-padding">
+	   			<div class="message-container">
+		       		<ng-container *ngIf="currentStatus=='DROPPED'" >
+		       			<div class="msg_container">
+						  	{{'access_denied_dropped' | translate}}
+		       			</div>
+						<div class="">
+							<a class="btn btn-primary" routerLink="/lesson/join/{{talentnook?._id}}">{{'request_to_join' | translate}}</a>
+						</div>
+		       		</ng-container>
+					<ng-container *ngIf="currentStatus=='WAITLISTED'" >
+						<div class="msg_container">
+						  	{{'access_denied_waitlisted' | translate}}
+						</div>
+						<div class="small-txt">
+							<a class="btn btn-primary" href="javascript:void(0);" (click)="commonService.contactTm(4,talentnook?.tmId)">
+			                  {{'contact' | translate }} {{ talentnook?.tmId?.name?.full | name:talentnook?.tmId?.fname: talentnook?.tmId?.lname: true }}
+			                </a><br/>
+			                <span class="mini-text">({{'you_will_be_redirect_on_your_lesson_within_10_sec' | translate}})</span>
+						</div>
+		       		</ng-container>
+		       		<ng-container *ngIf="currentStatus=='REQUESTED'" >
+						<div class="msg_container">
+						  	{{getMessage('requested_1')}}<br/>
+						</div>
+						<div class="small-txt">
+						  	{{getMessage('requested_2')}}
+						</div>
+						<div class="">
+							<a class="btn btn-primary" href="javascript:void(0);" (click)="commonService.contactTm(4,talentnook?.tmId)">
+			                  {{'contact' | translate }} {{ talentnook?.tmId?.name?.full | name:talentnook?.tmId?.fname: talentnook?.tmId?.lname: true }}
+			                </a><br/>
+			                <span class="mini-text">({{'you_will_be_redirect_on_your_lesson_within_10_sec' | translate}})</span>
+						</div>
+		       		</ng-container>
+		       		<ng-container *ngIf="currentStatus=='INVITED'" >
+						<div class="msg_container">
+						  	{{getMessage('invited')}}
+						</div>
+						<div class="">
+							<a class="btn btn-primary" routerLink="/lesson/join/{{talentnook?._id}}">{{'join_now' | translate}}</a>
+						</div>
+		       		</ng-container>
+	       		</div>
+			</div>
+			<div class="col-md-6 col-sm-4 col-xs-4 no-padding">
+				<div class="col-md-12 col-xs-12 col-sm-12 no-padding center-image">
+					<div class=""><img class="img-responsive image-handler" src="assets/images/confirm-request-page-talentnook.png" alt="confirm-request-page-talentnook" /></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
